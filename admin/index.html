@@ -1,412 +1,421 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es" class="dark scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Restaurante Ámbar</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - ÁMBAR Cuisine</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            black: '#080808',
-                            card: '#121212',
-                            surface: '#18181b',
-                            orange: '#f97316',
-                            bright: '#ff6b00',
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Cinzel', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    }
-                }
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#080808',
+              card: '#121212',
+              surface: '#18181b',
+              orange: '#f97316',
+              'orange-bright': '#ff6b00',
+              accent: '#ea580c',
+              gold: '#d97706',
+              darkgray: '#27272a',
             }
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
         }
-    </script>
+      }
+    }
+  </script>
 
-    <style>
-        body {
-            background-color: #080808;
-            color: #e4e4e7;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .font-serif {
-            font-family: 'Cinzel', serif;
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #080808;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #f97316;
-        }
-        .vertical-text {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-        }
-        /* Glass/Glow Effects */
-        .orange-glow {
-            box-shadow: 0 0 20px -5px rgba(249, 115, 22, 0.3);
-        }
-    </style>
+  <style>
+    body {
+      background-color: #080808;
+      color: #e4e4e7;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-serif {
+      font-family: 'Cinzel', serif;
+    }
+    .vertical-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080808;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f97316;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-brand-black antialiased selection:bg-brand-orange selection:text-black relative">
+<body class="min-h-screen bg-brand-black text-gray-200 antialiased selection:bg-brand-orange selection:text-black relative">
 
-    <div class="fixed left-6 top-1/2 -translate-y-1/2 pointer-events-none select-none z-0 opacity-[0.03] hidden lg:block">
-        <span class="vertical-text text-[10rem] font-serif font-black tracking-widest text-brand-orange uppercase">ADMINISTRADOR</span>
-    </div>
+  <!-- Watermark Vertical Background -->
+  <div class="fixed left-4 top-1/3 -translate-y-1/2 pointer-events-none select-none z-0 opacity-5 hidden lg:block">
+    <span class="vertical-text text-8xl font-serif font-black tracking-widest text-brand-orange uppercase">CONTROL ÁMBAR</span>
+  </div>
 
-    <header class="sticky top-0 z-50 bg-brand-black/90 backdrop-blur-md border-b border-zinc-800/80 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-orange to-red-600 flex items-center justify-center text-black font-serif font-bold text-2xl shadow-[0_0_15px_rgba(249,115,22,0.4)]">
-                    Á
-                </div>
-                <div>
-                    <h1 class="font-serif text-xl tracking-wider text-white font-bold flex items-center gap-3">
-                        ÁMBAR 
-                        <span class="text-[10px] font-sans font-bold bg-brand-orange/20 text-brand-orange px-2 py-1 rounded border border-brand-orange/30 tracking-widest uppercase">Admin Panel</span>
-                    </h1>
-                    <p class="text-xs text-zinc-400 mt-1 font-light tracking-wide">Centro de Gestión de Reservas y Disponibilidad</p>
-                </div>
-            </div>
-
-            <button onclick="alert('Volverías a la página principal.')" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold tracking-wider text-zinc-300 bg-zinc-900 border border-zinc-800 rounded hover:border-brand-orange hover:text-brand-orange transition-all duration-300">
-                <i class="fa-solid fa-door-open"></i>
-                <span class="uppercase">Ver Sitio Web</span>
-            </button>
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-50 bg-brand-black/90 backdrop-blur-md border-b border-zinc-800/80 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-orange to-brand-accent flex items-center justify-center text-black font-serif font-bold text-xl shadow-[0_0_15px_rgba(249,115,22,0.4)]">
+          Á
         </div>
-    </header>
+        <div>
+          <h1 class="font-serif text-lg tracking-wider text-white font-bold flex items-center gap-2">
+            ÁMBAR CUISINE
+            <span class="text-xs font-sans bg-brand-orange/20 text-brand-orange px-2 py-0.5 rounded border border-brand-orange/30">ADMIN</span>
+          </h1>
+          <p class="text-xs text-zinc-400">Gestión de Reservas y Disponibilidad</p>
+        </div>
+      </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 relative z-10 space-y-10">
+      <a href="/" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-wider text-zinc-300 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-brand-orange hover:text-brand-orange transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Volver a la Web</span>
+      </a>
+    </div>
+  </header>
 
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- KPI 1 -->
-            <div class="bg-brand-card border border-zinc-800/80 rounded-lg p-6 hover:border-zinc-700 transition-all shadow-lg relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-brand-orange/5 rounded-full blur-2xl group-hover:bg-brand-orange/10 transition-all"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-widest text-zinc-400 font-medium">Reservas de Hoy</span>
-                    <i class="fa-solid fa-calendar-day text-brand-orange text-lg"></i>
-                </div>
-                <p class="text-4xl font-serif font-bold text-white mt-4" id="kpi-today">0</p>
-            </div>
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 relative z-10 space-y-8">
 
-            <!-- KPI 2 -->
-            <div class="bg-brand-card border border-zinc-800/80 rounded-lg p-6 hover:border-zinc-700 transition-all shadow-lg relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-widest text-zinc-400 font-medium">Confirmadas</span>
-                    <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
-                </div>
-                <p class="text-4xl font-serif font-bold text-white mt-4" id="kpi-confirmed">0</p>
-            </div>
+    <!-- KPI Cards Section -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Reservas Hoy</span>
+          <i class="fa-solid fa-calendar-check text-brand-orange"></i>
+        </div>
+        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-today">0</p>
+      </div>
 
-            <!-- KPI 3 -->
-            <div class="bg-brand-card border border-zinc-800/80 rounded-lg p-6 hover:border-zinc-700 transition-all shadow-lg relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-widest text-zinc-400 font-medium">Pendientes</span>
-                    <i class="fa-solid fa-clock-rotate-left text-amber-500 text-lg"></i>
-                </div>
-                <p class="text-4xl font-serif font-bold text-white mt-4" id="kpi-pending">0</p>
-            </div>
-        </section>
+      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Confirmadas</span>
+          <i class="fa-solid fa-circle-check text-emerald-500"></i>
+        </div>
+        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-confirmed">0</p>
+      </div>
 
-        <section class="bg-brand-card border border-zinc-800 rounded-lg p-6 lg:p-8 shadow-2xl relative">
-            
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-zinc-800 pb-6">
-                <div>
-                    <h2 class="font-serif text-2xl font-bold text-white flex items-center gap-3">
-                        <i class="fa-solid fa-sliders text-brand-orange"></i>
-                        Disponibilidad de Horarios
-                    </h2>
-                    <p class="text-sm text-zinc-400 mt-2 font-light">
-                        Controla los turnos disponibles en el sitio web. Haz clic en una hora para bloquearla o liberarla.
-                    </p>
-                </div>
+      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Pendientes</span>
+          <i class="fa-solid fa-clock text-amber-500"></i>
+        </div>
+        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-pending">0</p>
+      </div>
 
-                <div class="flex flex-col gap-2">
-                    <label for="schedule-date" class="text-[10px] uppercase tracking-widest text-brand-orange font-semibold">Seleccionar Fecha Operativa:</label>
-                    <input type="date" id="schedule-date" class="bg-zinc-900 border border-zinc-700 text-white rounded px-4 py-3 text-sm focus:outline-none focus:border-brand-orange transition-all orange-glow">
-                </div>
-            </div>
+      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Total Personas Hoy</span>
+          <i class="fa-solid fa-users text-brand-orange"></i>
+        </div>
+        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-guests">0</p>
+      </div>
+    </section>
 
-            <!-- Leyenda Visual -->
-            <div class="flex flex-wrap items-center gap-6 text-xs mb-8 bg-zinc-900/50 p-4 rounded border border-zinc-800/50">
-                <span class="uppercase tracking-wider text-zinc-500 font-semibold mr-2">Estado de turnos:</span>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded bg-emerald-500/20 border border-emerald-500"></span>
-                    <span class="text-zinc-300">Disponible online</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded bg-rose-500/20 border border-rose-500 shadow-[0_0_10px_rgba(243,24,32,0.2)]"></span>
-                    <span class="text-zinc-300">Ocupado / Bloqueado</span>
-                </div>
-            </div>
+    <!-- SECTION: Control Manual de Horarios -->
+    <section class="bg-brand-card border border-zinc-800 rounded-xl p-6 shadow-2xl relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-brand-orange/5 rounded-full blur-2xl pointer-events-none"></div>
 
-            <!-- Cuadrícula de Horas -->
-            <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <!-- Se inyectan las horas mediante JavaScript -->
-            </div>
-        </section>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-zinc-800 pb-4">
+        <div>
+          <h2 class="font-serif text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-toggle-on text-brand-orange"></i>
+            Control Manual de Disponibilidad de Horas
+          </h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Haz clic en una hora para cambiar entre <span class="text-emerald-400 font-semibold">Disponible</span> u <span class="text-rose-400 font-semibold">Ocupada / Bloqueada</span>.
+          </p>
+        </div>
 
-        <section class="bg-brand-card border border-zinc-800 rounded-lg p-6 lg:p-8 shadow-2xl">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 border-b border-zinc-800 pb-6">
-                <div>
-                    <h2 class="font-serif text-2xl font-bold text-white flex items-center gap-3">
-                        <i class="fa-solid fa-book-open text-brand-orange"></i>
-                        Solicitudes de Reservación
-                    </h2>
-                    <p class="text-sm text-zinc-400 mt-2 font-light">Administra las reservas entrantes del sistema.</p>
-                </div>
+        <div class="flex items-center gap-3">
+          <label for="schedule-date" class="text-xs text-zinc-400 whitespace-nowrap">Seleccionar Fecha:</label>
+          <input type="date" id="schedule-date" class="bg-zinc-900 border border-zinc-700 text-white rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-orange transition-all">
+        </div>
+      </div>
 
-                <!-- Botones de Filtro -->
-                <div class="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 w-full lg:w-auto">
-                    <button data-filter="all" class="filter-btn active text-[10px] uppercase tracking-wider px-4 py-2.5 rounded border border-brand-orange bg-brand-orange/10 text-brand-orange font-bold transition-all whitespace-nowrap">Todas</button>
-                    <button data-filter="pendiente" class="filter-btn text-[10px] uppercase tracking-wider px-4 py-2.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600 transition-all whitespace-nowrap">Pendientes</button>
-                    <button data-filter="confirmada" class="filter-btn text-[10px] uppercase tracking-wider px-4 py-2.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600 transition-all whitespace-nowrap">Confirmadas</button>
-                    <button data-filter="cancelada" class="filter-btn text-[10px] uppercase tracking-wider px-4 py-2.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600 transition-all whitespace-nowrap">Canceladas</button>
-                </div>
-            </div>
+      <!-- Leyenda -->
+      <div class="flex items-center gap-6 text-xs mb-6 bg-zinc-900/50 p-3 rounded-lg border border-zinc-800/50">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500"></span>
+          <span class="text-zinc-300">Disponible en la web</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rose-500/20 border border-rose-500"></span>
+          <span class="text-zinc-300">Bloqueada (Presencial / Llena)</span>
+        </div>
+      </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-zinc-300">
-                    <thead class="bg-zinc-900 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold border-b border-zinc-800">
-                        <tr>
-                            <th class="py-4 px-4 font-sans rounded-tl">Cliente</th>
-                            <th class="py-4 px-4 font-sans">Detalles</th>
-                            <th class="py-4 px-4 font-sans">Fecha y Hora</th>
-                            <th class="py-4 px-4 font-sans">Estado</th>
-                            <th class="py-4 px-4 font-sans text-right rounded-tr">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reservations-table-body" class="divide-y divide-zinc-800/50">
-                        <!-- Se inyectan las filas mediante JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+      <!-- Slots de Horas -->
+      <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <!-- Generado dinámicamente -->
+      </div>
+    </section>
 
-    </main>
+    <!-- SECTION: Gestión de Reservaciones -->
+    <section class="bg-brand-card border border-zinc-800 rounded-xl p-6 shadow-2xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-zinc-800 pb-4">
+        <div>
+          <h2 class="font-serif text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-brand-orange"></i>
+            Listado de Reservaciones Recibidas
+          </h2>
+          <p class="text-xs text-zinc-400 mt-1">Monitorea y cambia el estado de cada reservación entrante.</p>
+        </div>
 
-    <script>
-        // Formato para obtener fecha actual YYYY-MM-DD local
-        const getLocalDateString = () => {
-            let date = new Date();
-            const offset = date.getTimezoneOffset();
-            date = new Date(date.getTime() - (offset*60*1000));
-            return date.toISOString().split('T')[0];
-        };
+        <!-- Filtros -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+          <button data-filter="all" class="filter-btn active text-xs px-3 py-1.5 rounded-lg border border-brand-orange bg-brand-orange/10 text-brand-orange font-semibold transition-all">Todas</button>
+          <button data-filter="pendiente" class="filter-btn text-xs px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 transition-all">Pendientes</button>
+          <button data-filter="confirmada" class="filter-btn text-xs px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 transition-all">Confirmadas</button>
+          <button data-filter="cancelada" class="filter-btn text-xs px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 transition-all">Canceladas</button>
+        </div>
+      </div>
 
-        const todayDate = getLocalDateString();
-        
-        // 1. Base de datos simulada localmente (Mock Data)
-        const DEFAULT_HOURS = [
-            '19:00', '19:30', '20:00', '20:30', 
-            '21:00', '21:30', '22:00', '22:30'
-        ];
+      <!-- Tabla de Reservas -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-zinc-300">
+          <thead class="bg-zinc-900/80 uppercase text-zinc-400 font-semibold border-b border-zinc-800">
+            <tr>
+              <th class="py-3 px-4">Cliente</th>
+              <th class="py-3 px-4">Personas</th>
+              <th class="py-3 px-4">Fecha y Hora</th>
+              <th class="py-3 px-4">Contacto</th>
+              <th class="py-3 px-4">Mensaje</th>
+              <th class="py-3 px-4">Estado</th>
+              <th class="py-3 px-4 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="reservations-table-body" class="divide-y divide-zinc-800/50">
+            <!-- Cargado dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-        // Guardará el estado de las horas por fecha: { '2023-10-25': { '19:00': true, '19:30': false } }
-        let scheduleDB = {}; 
-        
-        // Datos de reservas iniciales
-        let reservationsDB = [
-            { id: 101, nombre: 'Valentina Rossi', email: 'v.rossi@email.com', telefono: '+503 7777-1111', personas: 2, fecha: todayDate, hora: '20:00', notas: 'Mesa apartada, Aniversario', estado: 'pendiente' },
-            { id: 102, nombre: 'Alejandro Ferrer', email: 'a.ferrer@email.com', telefono: '+503 7777-2222', personas: 4, fecha: todayDate, hora: '21:30', notas: 'Sin alergias', estado: 'confirmada' },
-            { id: 103, nombre: 'Sofía Laurent', email: 'sofia@email.com', telefono: '+503 7777-3333', personas: 6, fecha: todayDate, hora: '19:00', notas: 'Reunión de negocios', estado: 'cancelada' },
-            { id: 104, nombre: 'Diego Arana', email: 'darana@email.com', telefono: '+503 7777-4444', personas: 2, fecha: '2027-01-01', hora: '20:30', notas: '', estado: 'pendiente' }
-        ];
+  </main>
 
-        let currentFilter = 'all';
+  <script>
+    // Configuración de Supabase (Reemplazar con tus credenciales)
+    const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+    const SUPABASE_ANON_KEY = 'TU-ANON-KEY-AQUI';
 
-        // 2. Inicialización
-        document.addEventListener('DOMContentLoaded', () => {
-            const dateInput = document.getElementById('schedule-date');
-            dateInput.value = todayDate;
+    let supabaseClient = null;
+    if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'https://TU-PROYECTO.supabase.co') {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 
-            // Listeners
-            dateInput.addEventListener('change', (e) => renderTimeSlots(e.target.value));
-            setupFilterButtons();
+    // Lista por defecto de horas operativas
+    const DEFAULT_HOURS = [
+      '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM',
+      '07:00 PM', '08:00 PM', '09:00 PM', '10:00 PM'
+    ];
 
-            // Render inicial
-            renderTimeSlots(todayDate);
-            renderReservations();
-            updateKPIs();
+    // Datos locales / Fallback demo
+    let localSchedule = {}; 
+    let localReservations = [
+      { id: 1, nombre: 'Carlos Mendoza', email: 'carlos@example.com', personas: 4, fecha: new Date().toISOString().split('T')[0], hora: '08:00 PM', mensaje: 'Mesa cerca de la ventana', estado: 'confirmada' },
+      { id: 2, nombre: 'Ana Gómez', email: 'ana@example.com', personas: 2, fecha: new Date().toISOString().split('T')[0], hora: '09:00 PM', mensaje: 'Aniversario', estado: 'pendiente' }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const dateInput = document.getElementById('schedule-date');
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.value = today;
+
+      dateInput.addEventListener('change', () => loadSlotsForDate(dateInput.value));
+      setupFilters();
+      
+      loadSlotsForDate(today);
+      renderReservations('all');
+      updateKPIs();
+    });
+
+    async function loadSlotsForDate(dateStr) {
+      const container = document.getElementById('time-slots-container');
+      container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-4">Cargando horarios...</div>';
+
+      let blockedHours = [];
+
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('horarios_disponibles')
+            .select('*')
+            .eq('fecha', dateStr);
+
+          if (!error && data) {
+            blockedHours = data.filter(d => !d.disponible).map(d => d.hora);
+          }
+        } catch (e) {
+          console.error("Error al obtener disponibilidad de Supabase", e);
+        }
+      } else {
+        if (localSchedule[dateStr]) {
+          blockedHours = Object.keys(localSchedule[dateStr]).filter(h => !localSchedule[dateStr][h]);
+        }
+      }
+
+      container.innerHTML = '';
+
+      DEFAULT_HOURS.forEach(hour => {
+        const isBlocked = blockedHours.includes(hour);
+        const card = document.createElement('button');
+        card.className = `p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-between gap-2 transition-all ${
+          isBlocked 
+            ? 'bg-rose-950/20 border-rose-500/40 text-rose-400 hover:bg-rose-900/30' 
+            : 'bg-emerald-950/20 border-emerald-500/40 text-emerald-400 hover:bg-emerald-900/30'
+        }`;
+
+        card.innerHTML = `
+          <span class="text-sm font-bold text-white">${hour}</span>
+          <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded ${
+            isBlocked ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'
+          }">
+            ${isBlocked ? 'Ocupado / Bloqueado' : 'Disponible'}
+          </span>
+        `;
+
+        card.onclick = () => toggleHourSlot(dateStr, hour, !isBlocked);
+        container.appendChild(card);
+      });
+    }
+
+    async function toggleHourSlot(dateStr, hour, setAvailable) {
+      if (supabaseClient) {
+        try {
+          const { error } = await supabaseClient
+            .from('horarios_disponibles')
+            .upsert({ fecha: dateStr, hora: hour, disponible: setAvailable }, { onConflict: 'fecha,hora' });
+
+          if (error) console.error("Error en Supabase:", error);
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        if (!localSchedule[dateStr]) localSchedule[dateStr] = {};
+        localSchedule[dateStr][hour] = setAvailable;
+      }
+
+      loadSlotsForDate(dateStr);
+    }
+
+    function renderReservations(filter = 'all') {
+      const tbody = document.getElementById('reservations-table-body');
+      tbody.innerHTML = '';
+
+      const filtered = localReservations.filter(r => filter === 'all' || r.estado === filter);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-6 text-zinc-500">No se encontraron reservaciones en esta categoría.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(res => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-900/40 transition-colors';
+
+        let statusBadge = '';
+        if (res.estado === 'confirmada') {
+          statusBadge = '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Confirmada</span>';
+        } else if (res.estado === 'pendiente') {
+          statusBadge = '<span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Pendiente</span>';
+        } else {
+          statusBadge = '<span class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Cancelada</span>';
+        }
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-semibold text-white">${res.nombre}</td>
+          <td class="py-3 px-4">${res.personas} pers.</td>
+          <td class="py-3 px-4 font-mono">${res.fecha} <span class="text-brand-orange">${res.hora}</span></td>
+          <td class="py-3 px-4 text-zinc-400">${res.email}</td>
+          <td class="py-3 px-4 text-zinc-400 italic max-w-xs truncate">${res.mensaje || '-'}</td>
+          <td class="py-3 px-4">${statusBadge}</td>
+          <td class="py-3 px-4 text-right space-x-2">
+            <button onclick="changeStatus(${res.id}, 'confirmada')" class="p-1.5 rounded text-emerald-400 hover:bg-emerald-950/40" title="Confirmar">
+              <i class="fa-solid fa-check"></i>
+            </button>
+            <button onclick="changeStatus(${res.id}, 'cancelada')" class="p-1.5 rounded text-rose-400 hover:bg-rose-950/40" title="Cancelar">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button onclick="deleteReservation(${res.id})" class="p-1.5 rounded text-zinc-500 hover:text-white hover:bg-zinc-800" title="Eliminar">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function changeStatus(id, newStatus) {
+      const res = localReservations.find(r => r.id === id);
+      if (res) {
+        res.estado = newStatus;
+        renderReservations();
+        updateKPIs();
+      }
+    }
+
+    function deleteReservation(id) {
+      localReservations = localReservations.filter(r => r.id !== id);
+      renderReservations();
+      updateKPIs();
+    }
+
+    function setupFilters() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('border-brand-orange', 'bg-brand-orange/10', 'text-brand-orange');
+            b.classList.add('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
+          });
+          btn.classList.remove('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
+          btn.classList.add('border-brand-orange', 'bg-brand-orange/10', 'text-brand-orange');
+
+          renderReservations(btn.dataset.filter);
         });
+      });
+    }
 
-        // 3. Renderizar Horarios
-        function renderTimeSlots(dateStr) {
-            const container = document.getElementById('time-slots-container');
-            container.innerHTML = '';
+    function updateKPIs() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayRes = localReservations.filter(r => r.fecha === todayStr);
 
-            // Si no existe la fecha en nuestra BD simulada, inicializarla todas como disponibles (true)
-            if (!scheduleDB[dateStr]) {
-                scheduleDB[dateStr] = {};
-                DEFAULT_HOURS.forEach(h => scheduleDB[dateStr][h] = true);
-            }
-
-            const currentDaySchedule = scheduleDB[dateStr];
-
-            DEFAULT_HOURS.forEach(hour => {
-                const isAvailable = currentDaySchedule[hour];
-                
-                const btn = document.createElement('button');
-                // Estilos dinámicos dependiendo si está disponible o no
-                const baseClasses = 'p-4 rounded border flex flex-col items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] active:scale-95';
-                const availableClasses = 'bg-emerald-950/20 border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/30 hover:border-emerald-500/60 shadow-[inset_0_0_15px_rgba(16,185,129,0.05)]';
-                const blockedClasses = 'bg-rose-950/30 border-rose-500/40 text-rose-400 hover:bg-rose-900/40 hover:border-rose-500/60 shadow-[0_0_15px_rgba(243,24,32,0.15)]';
-
-                btn.className = `${baseClasses} ${isAvailable ? availableClasses : blockedClasses}`;
-                
-                btn.innerHTML = `
-                    <span class="text-xl font-serif font-bold text-white tracking-wider">${hour}</span>
-                    <span class="text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded w-full ${isAvailable ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}">
-                        ${isAvailable ? '<i class="fa-solid fa-check mr-1"></i> Libre' : '<i class="fa-solid fa-lock mr-1"></i> Ocupado'}
-                    </span>
-                `;
-
-                // Al hacer click, alternar disponibilidad
-                btn.onclick = () => {
-                    scheduleDB[dateStr][hour] = !isAvailable;
-                    renderTimeSlots(dateStr); // Re-renderizar la grilla
-                };
-
-                container.appendChild(btn);
-            });
-        }
-
-        // 4. Renderizar Tabla de Reservaciones
-        function renderReservations() {
-            const tbody = document.getElementById('reservations-table-body');
-            tbody.innerHTML = '';
-
-            // Filtrar
-            const filteredData = reservationsDB.filter(res => {
-                if (currentFilter === 'all') return true;
-                return res.estado === currentFilter;
-            });
-
-            // Ordenar por fecha y luego hora
-            filteredData.sort((a, b) => {
-                if (a.fecha === b.fecha) {
-                    return a.hora.localeCompare(b.hora);
-                }
-                return a.fecha.localeCompare(b.fecha);
-            });
-
-            if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-zinc-500 font-light">No hay reservaciones para los criterios seleccionados.</td></tr>`;
-                return;
-            }
-
-            filteredData.forEach(res => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-zinc-900/40 transition-colors group';
-
-                // Badges de estado
-                let statusBadge = '';
-                if (res.estado === 'confirmada') statusBadge = '<span class="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Confirmada</span>';
-                else if (res.estado === 'pendiente') statusBadge = '<span class="inline-flex items-center gap-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pendiente</span>';
-                else statusBadge = '<span class="inline-flex items-center gap-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Cancelada</span>';
-
-                tr.innerHTML = `
-                    <td class="py-4 px-4">
-                        <div class="font-serif text-white text-base">${res.nombre}</div>
-                        <div class="text-[11px] text-zinc-500 mt-0.5">${res.email}</div>
-                    </td>
-                    <td class="py-4 px-4">
-                        <div class="font-medium text-brand-orange text-sm">${res.personas} Personas</div>
-                        <div class="text-[11px] text-zinc-400 italic mt-0.5 max-w-[150px] truncate" title="${res.notas}">${res.notas || 'Sin notas especiales'}</div>
-                    </td>
-                    <td class="py-4 px-4">
-                        <div class="text-white text-sm"><i class="fa-regular fa-calendar text-brand-orange/70 mr-1.5"></i>${res.fecha}</div>
-                        <div class="text-xs text-zinc-400 mt-0.5"><i class="fa-regular fa-clock text-brand-orange/70 mr-1.5"></i>${res.hora} hs</div>
-                    </td>
-                    <td class="py-4 px-4">
-                        ${statusBadge}
-                    </td>
-                    <td class="py-4 px-4 text-right">
-                        <div class="flex items-center justify-end gap-2 opacity-100 lg:opacity-60 group-hover:opacity-100 transition-opacity">
-                            ${res.estado !== 'confirmada' ? `<button onclick="changeStatus(${res.id}, 'confirmada')" class="w-8 h-8 rounded bg-zinc-800 hover:bg-emerald-950/50 text-zinc-400 hover:text-emerald-400 border border-transparent hover:border-emerald-500/30 transition-all flex items-center justify-center" title="Confirmar Reserva"><i class="fa-solid fa-check"></i></button>` : ''}
-                            ${res.estado !== 'cancelada' ? `<button onclick="changeStatus(${res.id}, 'cancelada')" class="w-8 h-8 rounded bg-zinc-800 hover:bg-rose-950/50 text-zinc-400 hover:text-rose-400 border border-transparent hover:border-rose-500/30 transition-all flex items-center justify-center" title="Cancelar Reserva"><i class="fa-solid fa-xmark"></i></button>` : ''}
-                            <button onclick="deleteReservation(${res.id})" class="w-8 h-8 rounded bg-zinc-800 hover:bg-red-900/80 text-zinc-500 hover:text-white transition-all flex items-center justify-center" title="Eliminar Registro"><i class="fa-solid fa-trash-can text-sm"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // 5. Acciones de Tabla
-        window.changeStatus = (id, newStatus) => {
-            const index = reservationsDB.findIndex(r => r.id === id);
-            if (index > -1) {
-                reservationsDB[index].estado = newStatus;
-                renderReservations();
-                updateKPIs();
-            }
-        };
-
-        window.deleteReservation = (id) => {
-            if(confirm('¿Estás seguro de que deseas eliminar permanentemente esta reservación?')) {
-                reservationsDB = reservationsDB.filter(r => r.id !== id);
-                renderReservations();
-                updateKPIs();
-            }
-        };
-
-        // 6. Configuración de Filtros
-        function setupFilterButtons() {
-            const btns = document.querySelectorAll('.filter-btn');
-            btns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    // Resetear estilos de todos
-                    btns.forEach(b => {
-                        b.classList.remove('border-brand-orange', 'bg-brand-orange/10', 'text-brand-orange');
-                        b.classList.add('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
-                    });
-                    
-                    // Activar el presionado
-                    e.target.classList.remove('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
-                    e.target.classList.add('border-brand-orange', 'bg-brand-orange/10', 'text-brand-orange');
-
-                    currentFilter = e.target.dataset.filter;
-                    renderReservations();
-                });
-            });
-        }
-
-        // 7. Actualizar Indicadores de KPI
-        function updateKPIs() {
-            // Filtrar reservas que son EXCLUSIVAMENTE para el día de hoy
-            const todayRes = reservationsDB.filter(r => r.fecha === todayDate);
-            
-            document.getElementById('kpi-today').innerText = todayRes.length;
-            
-            const confirmedToday = todayRes.filter(r => r.estado === 'confirmada').length;
-            document.getElementById('kpi-confirmed').innerText = confirmedToday;
-            
-            const pendingToday = todayRes.filter(r => r.estado === 'pendiente').length;
-            document.getElementById('kpi-pending').innerText = pendingToday;
-        }
-
-    </script>
+      document.getElementById('kpi-today').innerText = todayRes.length;
+      document.getElementById('kpi-confirmed').innerText = localReservations.filter(r => r.estado === 'confirmada').length;
+      document.getElementById('kpi-pending').innerText = localReservations.filter(r => r.estado === 'pendiente').length;
+      document.getElementById('kpi-guests').innerText = todayRes.reduce((acc, curr) => acc + parseInt(curr.personas || 0), 0);
+    }
+  </script>
 </body>
 </html>
