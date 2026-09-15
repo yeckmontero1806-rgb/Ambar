@@ -1,565 +1,607 @@
 <!DOCTYPE html>
-<html lang="es" class="dark scroll-smooth">
+<html lang="es" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ÁMBAR Cuisine - Alta Cocina y Elegancia</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante Ámbar | Gastronomía de Autor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS CDN Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              black: '#080808',
-              card: '#121212',
-              surface: '#18181b',
-              orange: '#f97316',
-              'orange-bright': '#ff6b00',
-              accent: '#ea580c',
-              gold: '#d97706',
-              darkgray: '#1c1c1e',
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#f97316',
+                            bright: '#ff6b00',
+                            glow: '#ff8a3d',
+                            dark: '#c2410c',
+                            gold: '#d97706',
+                            deep: '#140c07'
+                        },
+                        dark: {
+                            base: '#080808',
+                            surface: '#111111',
+                            card: '#161616',
+                            border: '#262626'
+                        }
+                    }
+                }
             }
-          },
-          fontFamily: {
-            serif: ['Cinzel', 'serif'],
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          }
         }
-      }
-    }
-  </script>
+    </script>
+    <style>
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #080808; 
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, .font-serif { 
+            font-family: 'Cormorant Garamond', serif; 
+        }
 
-  <style>
-    body {
-      background-color: #080808;
-      color: #e4e4e7;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-    }
-    .font-serif {
-      font-family: 'Cinzel', serif;
-    }
-    .vertical-text {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-    }
-    /* Efecto de superposición de secciones */
-    .section-overlap {
-      margin-top: -5rem;
-      position: relative;
-      z-index: 20;
-    }
-    .section-overlap-deep {
-      margin-top: -8rem;
-      position: relative;
-      z-index: 30;
-    }
-    /* Animaciones de Scroll */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-    .reveal.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-left {
-      opacity: 0;
-      transform: translateX(-40px);
-      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .reveal-left.active {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    .reveal-right {
-      opacity: 0;
-      transform: translateX(40px);
-      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .reveal-right.active {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #080808;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #27272a;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #f97316;
-    }
-  </style>
+        /* Texto vertical personalizado */
+        .writing-mode-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        /* Hero Parallax Glow */
+        .hero-bg {
+            background: linear-gradient(180deg, rgba(8,8,8,0.4) 0%, rgba(8,8,8,0.95) 100%), 
+                        url('https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Superposición suave de secciones */
+        .section-overlap {
+            margin-top: -3rem;
+            position: relative;
+            z-index: 20;
+        }
+
+        .section-overlap-deep {
+            margin-top: -3rem;
+            position: relative;
+            z-index: 30;
+        }
+
+        @media (min-width: 1024px) {
+            .section-overlap {
+                margin-top: -5rem;
+            }
+            .section-overlap-deep {
+                margin-top: -5rem;
+            }
+        }
+
+        /* Efectos de brillo naranja en Hover */
+        .orange-glow {
+            box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.25);
+        }
+
+        .orange-glow-hover:hover {
+            box-shadow: 0 0 35px 0px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Animaciones con Intersection Observer */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-active {
+            opacity: 1 !important;
+            transform: translateY(0) translateX(0) !important;
+        }
+
+        /* Delays */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080808;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+    </style>
 </head>
-<body class="bg-brand-black text-gray-200 antialiased selection:bg-brand-orange selection:text-black">
+<body class="selection:bg-brand-orange selection:text-black">
 
-  <!-- Watermark Vertical Backgrounds -->
-  <div class="fixed left-6 top-1/4 pointer-events-none select-none z-0 opacity-5 hidden xl:block">
-    <span class="vertical-text text-9xl font-serif font-black tracking-widest text-brand-orange uppercase">ÁMBAR 2026</span>
-  </div>
-  <div class="fixed right-6 top-1/2 pointer-events-none select-none z-0 opacity-5 hidden xl:block">
-    <span class="vertical-text text-8xl font-serif font-black tracking-widest text-white uppercase">FINE DINING</span>
-  </div>
+    <nav class="fixed w-full z-50 transition-all duration-500 bg-black/70 backdrop-blur-md border-b border-white/10" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex justify-between items-center h-24">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 text-3xl font-serif font-bold tracking-widest text-white group">
+                    <span class="w-2.5 h-8 bg-brand-orange group-hover:scale-y-125 transition-transform duration-300"></span>
+                    ÁMBAR <span class="text-xs tracking-widest text-brand-orange uppercase font-sans font-light self-end mb-1">Cuisine</span>
+                </a>
 
-  <!-- Header / Navbar -->
-  <header class="fixed top-0 left-0 w-full z-50 bg-brand-black/80 backdrop-blur-md border-b border-zinc-900 transition-all duration-300" id="navbar">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-orange to-brand-accent flex items-center justify-center text-black font-serif font-bold text-xl shadow-[0_0_20px_rgba(249,115,22,0.4)] group-hover:scale-105 transition-transform">
-          Á
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8 text-xs tracking-widest uppercase font-light">
+                    <a href="#inicio" class="text-neutral-300 hover:text-brand-orange transition-colors">Inicio</a>
+                    <a href="#filosofia" class="text-neutral-300 hover:text-brand-orange transition-colors">Filosofía</a>
+                    <a href="#menu" class="text-neutral-300 hover:text-brand-orange transition-colors">Menú de Autor</a>
+                    <a href="#experiencia" class="text-neutral-300 hover:text-brand-orange transition-colors">Experiencia</a>
+                    <!-- Enlace corregido a la carpeta admin -->
+                    <a href="/admin/" class="text-neutral-400 hover:text-brand-orange transition-colors flex items-center gap-1.5 border-l border-neutral-800 pl-4">
+                        <i class="fa-solid fa-user-gear text-brand-orange"></i>
+                        <span>Admin</span>
+                    </a>
+                    <a href="#reservas" class="px-6 py-2.5 border border-brand-orange/80 text-brand-orange hover:bg-brand-orange hover:text-black transition-all duration-300 rounded-none tracking-widest font-medium">
+                        Reservar
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-neutral-300 hover:text-brand-orange p-2 text-2xl">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
         </div>
-        <div class="flex flex-col">
-          <span class="font-serif text-lg tracking-widest text-white font-bold">ÁMBAR</span>
-          <span class="text-[9px] tracking-[0.3em] text-brand-orange uppercase -mt-1 font-sans">Cuisine</span>
+
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-surface/95 backdrop-blur-xl border-b border-neutral-800">
+            <div class="px-6 pt-4 pb-8 space-y-4 text-xs tracking-widest uppercase flex flex-col">
+                <a href="#inicio" class="py-2 border-b border-neutral-800 text-neutral-300 hover:text-brand-orange">Inicio</a>
+                <a href="#filosofia" class="py-2 border-b border-neutral-800 text-neutral-300 hover:text-brand-orange">Filosofía</a>
+                <a href="#menu" class="py-2 border-b border-neutral-800 text-neutral-300 hover:text-brand-orange">Menú de Autor</a>
+                <a href="#experiencia" class="py-2 border-b border-neutral-800 text-neutral-300 hover:text-brand-orange">Experiencia</a>
+                <!-- Enlace corregido a la carpeta admin en móvil -->
+                <a href="/admin/" class="py-2 border-b border-neutral-800 text-brand-orange flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear"></i> Panel Administrativo
+                </a>
+                <a href="#reservas" class="py-3 text-center bg-brand-orange text-black font-semibold mt-4">Reservar Mesa</a>
+            </div>
         </div>
-      </a>
+    </nav>
 
-      <!-- Desktop Nav -->
-      <nav class="hidden md:flex items-center gap-8 text-xs font-medium tracking-widest uppercase">
-        <a href="#inicio" class="text-zinc-300 hover:text-brand-orange transition-colors">Inicio</a>
-        <a href="#esencia" class="text-zinc-300 hover:text-brand-orange transition-colors">Esencia</a>
-        <a href="#menu" class="text-zinc-300 hover:text-brand-orange transition-colors">Menú</a>
-        <a href="#reservaciones" class="text-zinc-300 hover:text-brand-orange transition-colors">Reservaciones</a>
-      </nav>
-
-      <div class="flex items-center gap-4">
-        <a href="/admin/" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:border-brand-orange hover:text-brand-orange text-xs tracking-wider transition-all">
-          <i class="fa-solid fa-lock text-[10px]"></i>
-          <span>Admin</span>
-        </a>
-        <a href="#reservaciones" class="px-5 py-2.5 rounded-lg bg-brand-orange text-black font-semibold text-xs tracking-widest uppercase hover:bg-brand-orange-bright transition-all shadow-[0_0_25px_rgba(249,115,22,0.3)]">
-          Reservar Mesa
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section id="inicio" class="relative min-h-screen flex items-center justify-center pt-20 pb-32 px-6 overflow-hidden">
-    <!-- Background Glows -->
-    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-orange/10 rounded-full blur-[140px] pointer-events-none"></div>
-
-    <div class="max-w-5xl mx-auto text-center relative z-10 space-y-8">
-      <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-brand-orange text-xs uppercase tracking-[0.2em] reveal">
-        <i class="fa-solid fa-star text-[10px]"></i>
-        <span>Experiencia Gastronómica Exclusiva</span>
-      </div>
-
-      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[1.1] reveal">
-        El arte del <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange via-orange-400 to-amber-500">buen comer</span>
-      </h1>
-
-      <p class="max-w-2xl mx-auto text-zinc-400 text-sm md:text-base font-light leading-relaxed reveal">
-        Una fusión impecable entre la cocina de autor y la elegancia contemporánea. Cada plato en ÁMBAR Cuisine es un viaje sensorial diseñado para despertar emociones memorables.
-      </p>
-
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 reveal">
-        <a href="#menu" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-orange to-brand-accent text-black font-bold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-[0_0_30px_rgba(249,115,22,0.4)]">
-          Explorar Menú
-        </a>
-        <a href="#reservaciones" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-semibold text-xs tracking-widest uppercase hover:border-brand-orange transition-all">
-          Reservar ahora
-        </a>
-      </div>
+    <!-- Marca de agua vertical lateral derecha -->
+    <div class="hidden xl:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 items-center gap-4 text-[10px] tracking-[0.3em] uppercase text-neutral-600 font-light pointer-events-none">
+        <span class="w-12 h-[1px] bg-neutral-800"></span>
+        <span class="writing-mode-vertical rotate-180">ÁMBAR &bull; GASTRONOMÍA DE ALTA ESCALA</span>
     </div>
 
-    <!-- Vertical scroll indicator -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
-      <span class="vertical-text text-[10px] tracking-[0.3em] uppercase text-zinc-400">Deslizar</span>
-      <div class="w-0.5 h-8 bg-gradient-to-b from-brand-orange to-transparent animate-pulse"></div>
-    </div>
-  </section>
+    <section id="inicio" class="hero-bg relative min-h-screen flex items-center justify-center pt-24 pb-32">
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-base via-transparent to-black/40"></div>
 
-  <!-- Nuestra Esencia Section (Superpuesta) -->
-  <section id="esencia" class="section-overlap px-6">
-    <div class="max-w-7xl mx-auto bg-brand-card border border-zinc-800/80 rounded-3xl p-8 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative overflow-hidden">
-      <!-- Decoración interior -->
-      <div class="absolute top-0 right-0 w-96 h-96 bg-brand-orange/5 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-        <div class="lg:col-span-6 space-y-6 reveal-left">
-          <div class="flex items-center gap-3">
-            <span class="h-px w-12 bg-brand-orange"></span>
-            <span class="text-xs uppercase tracking-[0.25em] text-brand-orange font-semibold">Nuestra Esencia</span>
-          </div>
-
-          <h2 class="font-serif text-3xl md:text-5xl font-bold text-white leading-tight">
-            Pasión por el detalle, respeto por el origen.
-          </h2>
-
-          <p class="text-zinc-400 text-sm md:text-base leading-relaxed font-light">
-            Fundado bajo la premisa de la excelencia culinaria, ÁMBAR Cuisine redefine los límites de la alta cocina. Seleccionamos ingredientes locales de productores artesanales y los transformamos mediante técnicas de vanguardia que honran los sabores auténticos.
-          </p>
-
-          <div class="grid grid-cols-2 gap-6 pt-4 border-t border-zinc-800">
-            <div>
-              <p class="font-serif text-3xl font-bold text-brand-orange">15+</p>
-              <p class="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Años de Maestría</p>
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Texto vertical decorativo a la izquierda -->
+            <div class="hidden lg:flex lg:col-span-1 flex-col items-center justify-center reveal-left">
+                <p class="writing-mode-vertical rotate-180 text-xs tracking-[0.4em] text-brand-orange font-light uppercase">
+                    EST. 2012 &bull; AUTOR
+                </p>
+                <div class="w-[1px] h-20 bg-gradient-to-b from-brand-orange to-transparent mt-6"></div>
             </div>
-            <div>
-              <p class="font-serif text-3xl font-bold text-brand-orange">100%</p>
-              <p class="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Ingredientes Orgánicos</p>
+
+            <!-- Contenido Principal Hero -->
+            <div class="lg:col-span-7 space-y-8 text-left reveal-up">
+                <div class="inline-flex items-center gap-3 border-l-2 border-brand-orange pl-4">
+                    <span class="text-xs uppercase tracking-[0.3em] text-neutral-400">Una Experiencia Sensorial Suprema</span>
+                </div>
+                <h1 class="text-6xl sm:text-7xl xl:text-8xl font-serif font-light leading-none tracking-tight text-white">
+                    Fuego, Pasión <br>
+                    <span class="italic font-normal text-brand-orange">&amp; Elegancia.</span>
+                </h1>
+                <p class="text-neutral-400 font-light max-w-xl text-base sm:text-lg leading-relaxed">
+                    Redefinimos la gastronomía contemporánea en un ambiente íntimo de penumbras y destellos dorados. Sabores profundos concebidos para paladares exigentes.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-5 pt-4">
+                    <a href="#reservas" class="px-8 py-4 bg-brand-orange text-black font-medium tracking-widest text-xs uppercase hover:bg-brand-bright transition-all duration-300 orange-glow flex items-center justify-center gap-3 group">
+                        <span>Reservar Experiencia</span>
+                        <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="#menu" class="px-8 py-4 border border-neutral-700 text-neutral-300 font-light tracking-widest text-xs uppercase hover:border-brand-orange hover:text-brand-orange transition-all duration-300 flex items-center justify-center">
+                        Explorar Menú
+                    </a>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <div class="lg:col-span-6 grid grid-cols-2 gap-4 reveal-right">
-          <div class="space-y-4">
-            <div class="aspect-[3/4] rounded-2xl overflow-hidden border border-zinc-800 relative group">
-              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=600" alt="Plato de autor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                <span class="text-xs font-serif tracking-wider text-white">Cortes Premium</span>
-              </div>
+            <!-- Imagen Vertical de Destacado Hero -->
+            <div class="lg:col-span-4 relative mt-10 lg:mt-0 reveal-right delay-200">
+                <div class="relative mx-auto w-full max-w-sm aspect-[3/4] border border-neutral-800 p-3 bg-dark-surface/80 backdrop-blur shadow-2xl">
+                    <div class="w-full h-full relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop" alt="Plato Elegante Ámbar" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-[10px] uppercase tracking-widest text-brand-orange font-medium">Plato Insignia</span>
+                            <h3 class="text-xl font-serif text-white mt-1">Solomillo en Infusión de Roble</h3>
+                        </div>
+                    </div>
+                </div>
+                <!-- Elemento decorativo flotante -->
+                <div class="absolute -bottom-6 -left-6 bg-brand-orange text-black p-4 font-serif text-2xl font-bold shadow-lg hidden sm:block">
+                    01/05
+                </div>
             </div>
-          </div>
-          <div class="space-y-4 pt-8">
-            <div class="aspect-[3/4] rounded-2xl overflow-hidden border border-zinc-800 relative group">
-              <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=600" alt="Ambiente Ámbar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                <span class="text-xs font-serif tracking-wider text-white">Mixología de Autor</span>
-              </div>
+        </div>
+    </section>
+
+    <section id="filosofia" class="section-overlap bg-dark-surface border-t border-neutral-900 pt-36 pb-28 lg:pt-44 relative overflow-hidden">
+        <!-- Marca de agua gigante de fondo -->
+        <span class="absolute top-8 left-6 sm:left-12 text-neutral-900/40 text-7xl sm:text-9xl font-serif font-bold tracking-tighter select-none pointer-events-none">
+            ÁMBAR
+        </span>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                
+                <!-- Collage Vertical de Imágenes -->
+                <div class="lg:col-span-6 grid grid-cols-12 gap-4 relative reveal-left pb-6 lg:pb-0">
+                    <div class="col-span-7 aspect-[2/3] overflow-hidden border border-neutral-800 shadow-2xl relative">
+                        <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1954&auto=format&fit=crop" alt="Chef Yeck" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-brand-orange/10 mix-blend-overlay"></div>
+                    </div>
+                    <div class="col-span-5 aspect-[2/3] sm:aspect-[2/4] overflow-hidden border border-neutral-800 shadow-2xl lg:translate-y-8 relative self-end">
+                        <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1770&auto=format&fit=crop" alt="Cava de Vinos" class="w-full h-full object-cover">
+                        <div class="absolute top-2 left-2 sm:top-4 sm:left-4 writing-mode-vertical text-[9px] sm:text-[10px] tracking-widest text-brand-orange uppercase bg-black/90 px-2 py-2 sm:py-3 border border-brand-orange/20">
+                            CAVA SELECCIONADA
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenido Informativo -->
+                <div class="lg:col-span-6 space-y-8 reveal-right">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 border-l border-brand-orange pl-3">
+                            <span class="text-xs uppercase tracking-[0.3em] text-brand-orange font-light">Nuestra Esencia</span>
+                        </div>
+                        <h2 class="text-4xl sm:text-5xl font-serif text-white leading-tight">
+                            Donde la Tradición Esculpe <br>
+                            <span class="italic text-neutral-400">la Vanguardia</span>
+                        </h2>
+                    </div>
+
+                    <p class="text-neutral-400 font-light leading-relaxed text-sm sm:text-base">
+                        En <strong class="text-white font-medium">Restaurante Ámbar</strong>, cada ingrediente es seleccionado respetando su ciclo natural. Cocinamos con fuego real, carbón vegetal y técnicas milenarias combinadas con la precisión moderna.
+                    </p>
+
+                    <!-- Lista con acentos naranjas -->
+                    <div class="space-y-5 pt-2 border-l border-neutral-800 pl-6">
+                        <div class="flex items-start gap-4">
+                            <span class="text-brand-orange font-serif text-2xl font-light">01</span>
+                            <div>
+                                <h4 class="text-white font-serif text-lg">Materia Prima Orgánica</h4>
+                                <p class="text-xs text-neutral-400 mt-1 font-light">Cultivos locales y pescas sustentables de alta mar día a día.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-brand-orange font-serif text-2xl font-light">02</span>
+                            <div>
+                                <h4 class="text-white font-serif text-lg">Maridaje Exclusivo</h4>
+                                <p class="text-xs text-neutral-400 mt-1 font-light">Más de 300 etiquetas de autor curadas por nuestro sommelier.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex flex-wrap items-center gap-6">
+                        <div class="border-b border-brand-orange pb-1">
+                            <span class="font-serif text-2xl text-white italic">Chef Vance</span>
+                        </div>
+                        <span class="text-[10px] sm:text-xs text-neutral-400 tracking-widest uppercase font-light">Fundador &amp; Director Culinario</span>
+                    </div>
+                </div>
+
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Menú Section (Superpuesta Profunda) -->
-  <section id="menu" class="section-overlap-deep px-6 pt-24">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center max-w-2xl mx-auto mb-16 space-y-4 reveal">
-        <span class="text-xs uppercase tracking-[0.25em] text-brand-orange font-semibold">Selección Culinaria</span>
-        <h2 class="font-serif text-4xl md:text-5xl font-bold text-white">Nuestra Carta</h2>
-        <p class="text-zinc-400 text-sm">Creaciones diseñadas para cautivar cada sentido.</p>
-      </div>
-
-      <!-- Tarjetas en formato Vertical (Portrait) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Plato 1 -->
-        <div class="bg-brand-card border border-zinc-800 rounded-3xl p-6 flex flex-col justify-between hover:border-brand-orange/50 transition-all duration-500 reveal group">
-          <div>
-            <div class="aspect-[4/5] rounded-2xl overflow-hidden mb-6 relative">
-              <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=600" alt="Filete Mignon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-zinc-800 text-brand-orange text-xs font-bold font-serif">
-                $48.00
-              </div>
+    <section id="menu" class="section-overlap-deep bg-dark-base border-t border-neutral-900 py-32 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            
+            <div class="flex flex-col lg:flex-row justify-between lg:items-end mb-16 gap-6 reveal-up">
+                <div>
+                    <span class="text-xs uppercase tracking-[0.3em] text-brand-orange font-light">Gastronomía Exclusiva</span>
+                    <h2 class="text-4xl sm:text-6xl font-serif text-white mt-2">Menú de Autor</h2>
+                </div>
+                <p class="text-neutral-500 font-light text-xs sm:text-sm max-w-xs leading-relaxed">
+                    Piezas elaboradas artesanalmente. Los precios reflejan la pureza de nuestros ingredientes.
+                </p>
             </div>
-            <h3 class="font-serif text-xl font-bold text-white mb-2">Filete Mignon Trufado</h3>
-            <p class="text-zinc-400 text-xs leading-relaxed font-light">
-              Corte fino en reducción de vino tinto de la casa, acompañado de puré de papa rústico al aroma de trufa negra silvestre.
-            </p>
-          </div>
-          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
-            <span class="uppercase tracking-wider">Especialidad de la Casa</span>
-            <i class="fa-solid fa-utensils text-brand-orange"></i>
-          </div>
-        </div>
 
-        <!-- Plato 2 -->
-        <div class="bg-brand-card border border-zinc-800 rounded-3xl p-6 flex flex-col justify-between hover:border-brand-orange/50 transition-all duration-500 reveal delay-150 group">
-          <div>
-            <div class="aspect-[4/5] rounded-2xl overflow-hidden mb-6 relative">
-              <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&q=80&w=600" alt="Salmón Nórdico" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-zinc-800 text-brand-orange text-xs font-bold font-serif">
-                $42.00
-              </div>
+            <!-- Grid de Tarjetas Verticales -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Tarjeta 1 -->
+                <div class="bg-dark-surface border border-neutral-800 p-6 flex flex-col justify-between orange-glow-hover transition-all duration-500 group reveal-up delay-100">
+                    <div>
+                        <div class="w-full aspect-[4/5] overflow-hidden mb-6 relative">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop" alt="Entrada Yeck" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <span class="absolute top-3 left-3 bg-black/90 text-brand-orange text-[10px] tracking-widest uppercase px-3 py-1 border border-brand-orange/30">Entrante</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="text-2xl font-serif text-white group-hover:text-brand-orange transition-colors">Tartar de Atún Rojo</h3>
+                            <span class="text-brand-orange font-serif text-xl">$28</span>
+                        </div>
+                        <p class="text-neutral-400 text-xs font-light leading-relaxed mb-6">
+                            Atún de aleta azul, emulsión de sésamo tostado, aguacate quemado y esferas de ponzu con aceite de trufa.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-neutral-900 flex justify-between items-center text-[10px] text-neutral-500 uppercase tracking-widest">
+                        <span>Maridaje recomendado</span>
+                        <span class="text-neutral-400">Chardonnay 2020</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 (Destacada) -->
+                <div class="bg-dark-card border border-brand-orange/40 p-6 flex flex-col justify-between orange-glow transition-all duration-500 group reveal-up delay-200 lg:-translate-y-6">
+                    <div>
+                        <div class="w-full aspect-[4/5] overflow-hidden mb-6 relative">
+                            <img src="https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=1931&auto=format&fit=crop" alt="Corte Tomahawk Yeck" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <span class="absolute top-3 left-3 bg-brand-orange text-black text-[10px] font-semibold tracking-widest uppercase px-3 py-1">Especialidad</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="text-2xl font-serif text-white group-hover:text-brand-orange transition-colors">Tomahawk madurado 45 Días</h3>
+                            <span class="text-brand-orange font-serif text-xl">$85</span>
+                        </div>
+                        <p class="text-neutral-400 text-xs font-light leading-relaxed mb-6">
+                            Corte premium a la brasa de encino, mantequilla de tuétano ahumado, sal marina negra y vegetal rostizado.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-neutral-800 flex justify-between items-center text-[10px] text-neutral-500 uppercase tracking-widest">
+                        <span>Maridaje recomendado</span>
+                        <span class="text-brand-orange">Cabernet Sauvignon</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="bg-dark-surface border border-neutral-800 p-6 flex flex-col justify-between orange-glow-hover transition-all duration-500 group reveal-up delay-300">
+                    <div>
+                        <div class="w-full aspect-[4/5] overflow-hidden mb-6 relative">
+                            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=1857&auto=format&fit=crop" alt="Postre Yeck" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <span class="absolute top-3 left-3 bg-black/90 text-brand-orange text-[10px] tracking-widest uppercase px-3 py-1 border border-brand-orange/30">Postre</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="text-2xl font-serif text-white group-hover:text-brand-orange transition-colors">Esfera de Cacao &amp; Oro</h3>
+                            <span class="text-brand-orange font-serif text-xl">$22</span>
+                        </div>
+                        <p class="text-neutral-400 text-xs font-light leading-relaxed mb-6">
+                            Chocolate 70% origen Ecuador, corazón helado de avellana, lámina de oro comestible y reducción de naranja amarga.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-neutral-900 flex justify-between items-center text-[10px] text-neutral-500 uppercase tracking-widest">
+                        <span>Maridaje recomendado</span>
+                        <span class="text-neutral-400">Oporto Cosecha</span>
+                    </div>
+                </div>
+
             </div>
-            <h3 class="font-serif text-xl font-bold text-white mb-2">Salmón del Atlántico en Costra</h3>
-            <p class="text-zinc-400 text-xs leading-relaxed font-light">
-              Preparado a la parrilla con costra de hierbas finas, emulsión de azafrán y vegetales baby glaseados al wok.
-            </p>
-          </div>
-          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
-            <span class="uppercase tracking-wider">Mariscos & Pescados</span>
-            <i class="fa-solid fa-fish text-brand-orange"></i>
-          </div>
-        </div>
 
-        <!-- Plato 3 -->
-        <div class="bg-brand-card border border-zinc-800 rounded-3xl p-6 flex flex-col justify-between hover:border-brand-orange/50 transition-all duration-500 reveal delay-300 group">
-          <div>
-            <div class="aspect-[4/5] rounded-2xl overflow-hidden mb-6 relative">
-              <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&q=80&w=600" alt="Postre de Autor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-zinc-800 text-brand-orange text-xs font-bold font-serif">
-                $18.00
-              </div>
+            <!-- Botón PDF o Menú Completo -->
+            <div class="mt-16 text-center reveal-up">
+                <a href="#" onclick="event.preventDefault();" class="inline-flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-brand-orange transition-colors border-b border-neutral-800 hover:border-brand-orange pb-2">
+                    <i class="fa-solid fa-file-pdf text-brand-orange"></i>
+                    <span>Descargar Carta Completa de Vinos &amp; Platillos (PDF)</span>
+                </a>
             </div>
-            <h3 class="font-serif text-xl font-bold text-white mb-2">Esfera de Cacao Ámbar</h3>
-            <p class="text-zinc-400 text-xs leading-relaxed font-light">
-              Cacao 70% de origen único, relleno de mousse de frutos rojos y infusión tibia de vainilla bourbon al momento.
-            </p>
-          </div>
-          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
-            <span class="uppercase tracking-wider">Repostería Fina</span>
-            <i class="fa-solid fa-cake-candles text-brand-orange"></i>
-          </div>
+
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Reservaciones Section (Conectado a Supabase) -->
-  <section id="reservaciones" class="py-32 px-6 relative">
-    <div class="max-w-4xl mx-auto bg-brand-card border border-zinc-800 rounded-3xl p-8 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative overflow-hidden reveal">
-      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl pointer-events-none"></div>
+    <section id="experiencia" class="py-28 bg-dark-surface relative border-t border-neutral-900 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-6 reveal-left">
+                    <span class="text-xs uppercase tracking-[0.3em] text-brand-orange font-light">Ambiente Privado</span>
+                    <h2 class="text-4xl sm:text-5xl font-serif text-white">
+                        Luces Dimas, <br>
+                        <span class="italic text-brand-orange">Momentos Memorables.</span>
+                    </h2>
+                    <p class="text-neutral-400 text-sm font-light leading-relaxed">
+                        Contamos con salones privados para reuniones de negocios o celebraciones íntimas. Acústica diseñada y atención personalizada de sommelier exclusivo.
+                    </p>
 
-      <div class="text-center max-w-xl mx-auto mb-12 space-y-3">
-        <span class="text-xs uppercase tracking-[0.25em] text-brand-orange font-semibold">Reserva tu Experiencia</span>
-        <h2 class="font-serif text-3xl md:text-4xl font-bold text-white">Mesa Exclusiva</h2>
-        <p class="text-zinc-400 text-xs">Selecciona la fecha para consultar disponibilidad en tiempo real.</p>
-      </div>
+                    <div class="grid grid-cols-2 gap-6 pt-6 border-t border-neutral-800">
+                        <div>
+                            <span class="block text-3xl font-serif text-white">12</span>
+                            <span class="text-[10px] uppercase tracking-widest text-neutral-500">Mesas Exclusivas</span>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-serif text-brand-orange">100%</span>
+                            <span class="text-[10px] uppercase tracking-widest text-neutral-500">Privacidad Garantizada</span>
+                        </div>
+                    </div>
+                </div>
 
-      <form id="reservation-form" class="space-y-6 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-2">
-            <label class="text-xs uppercase tracking-wider text-zinc-300 font-medium">Nombre Completo</label>
-            <input type="text" id="res-nombre" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-orange transition-all" placeholder="Ej. Alejandra Valdés">
-          </div>
+                <div class="lg:col-span-7 grid grid-cols-2 gap-4 reveal-right">
+                    <div class="space-y-4">
+                        <div class="aspect-[3/4] overflow-hidden border border-neutral-800">
+                            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1770&auto=format&fit=crop" alt="Restaurante Interior" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500">
+                        </div>
+                        <div class="aspect-[4/3] overflow-hidden border border-neutral-800">
+                            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1974&auto=format&fit=crop" alt="Coctelería de Autor" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <div class="aspect-[4/3] overflow-hidden border border-neutral-800">
+                            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=1770&auto=format&fit=crop" alt="Mesa Yeck" class="w-full h-full object-cover">
+                        </div>
+                        <div class="aspect-[3/4] overflow-hidden border border-neutral-800">
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1770&auto=format&fit=crop" alt="Detalle Culinario" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500">
+                        </div>
+                    </div>
+                </div>
 
-          <div class="space-y-2">
-            <label class="text-xs uppercase tracking-wider text-zinc-300 font-medium">Correo Electrónico</label>
-            <input type="email" id="res-email" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-orange transition-all" placeholder="correo@example.com">
-          </div>
+            </div>
         </div>
+    </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="space-y-2">
-            <label class="text-xs uppercase tracking-wider text-zinc-300 font-medium">Número de Personas</label>
-            <select id="res-personas" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-orange transition-all">
-              <option value="1">1 Persona</option>
-              <option value="2" selected>2 Personas</option>
-              <option value="3">3 Personas</option>
-              <option value="4">4 Personas</option>
-              <option value="5">5 Personas</option>
-              <option value="6">6+ Personas (Grupo)</option>
-            </select>
-          </div>
+    <section id="reservas" class="section-overlap bg-black border-t border-neutral-900 py-32 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-dark-surface border border-neutral-800 orange-glow">
+                
+                <!-- Info de Contacto -->
+                <div class="lg:col-span-5 p-10 lg:p-14 bg-gradient-to-br from-dark-card to-black border-b lg:border-b-0 lg:border-r border-neutral-800 flex flex-col justify-between space-y-10 reveal-left">
+                    <div>
+                        <span class="text-xs uppercase tracking-[0.3em] text-brand-orange font-light">Reservaciones</span>
+                        <h2 class="text-4xl font-serif text-white mt-2">Asegure su Mesa</h2>
+                        <p class="text-neutral-400 text-sm font-light leading-relaxed mt-4">
+                            Para mantener la excelencia en la atención, recomendamos realizar su reserva con anticipación.
+                        </p>
+                    </div>
 
-          <div class="space-y-2">
-            <label class="text-xs uppercase tracking-wider text-zinc-300 font-medium">Fecha de Reserva</label>
-            <input type="date" id="res-fecha" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-orange transition-all">
-          </div>
+                    <div class="space-y-6 border-t border-neutral-800/80 pt-6">
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-location-dot text-brand-orange mt-1"></i>
+                            <div>
+                                <h4 class="text-xs uppercase tracking-widest text-white font-medium">Ubicación</h4>
+                                <p class="text-xs text-neutral-400 mt-0.5">Zona Gastronómica Exclusiva</p>
+                            </div>
+                        </div>
 
-          <div class="space-y-2">
-            <label class="text-xs uppercase tracking-wider text-zinc-300 font-medium">Hora Disponible</label>
-            <select id="res-hora" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-orange transition-all">
-              <option value="">Seleccione fecha primero</option>
-            </select>
-          </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-clock text-brand-orange mt-1"></i>
+                            <div>
+                                <h4 class="text-xs uppercase tracking-widest text-white font-medium">Horario de Atención</h4>
+                                <p class="text-xs text-neutral-400 mt-0.5">Martes a Domingo: 19:00 - 23:30 hs</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-phone text-brand-orange mt-1"></i>
+                            <div>
+                                <h4 class="text-xs uppercase tracking-widest text-white font-medium">Contacto Directo</h4>
+                                <p class="text-xs text-neutral-400 mt-0.5">+503 2222-8888 &bull; reservas@ambarcuisine.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <div class="lg:col-span-7 p-10 lg:p-14 reveal-right">
+                    
+                    <div id="reservation-alert" class="hidden mb-6 p-4 text-xs font-light tracking-wide border"></div>
+
+                    <form id="reservation-form" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-2">Nombre Completo *</label>
+                                <input type="text" id="res-nombre" required class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors" placeholder="Ej. Carlos Mendoza">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-2">Correo Electrónico *</label>
+                                <input type="email" id="res-email" required class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors" placeholder="correo@ejemplo.com">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-2">Personas *</label>
+                                <select id="res-personas" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                                    <option value="1">1 Persona</option>
+                                    <option value="2" selected>2 Personas</option>
+                                    <option value="3">3 Personas</option>
+                                    <option value="4">4 Personas</option>
+                                    <option value="5">5+ Personas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-2">Fecha *</label>
+                                <input type="date" id="res-fecha" required class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-2">Hora *</label>
+                                <select id="res-hora" required class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                                    <option value="19:00">19:00 hs</option>
+                                    <option value="20:00">20:00 hs</option>
+                                    <option value="21:00">21:00 hs</option>
+                                    <option value="22:00">22:00 hs</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-2">Comentarios Especiales</label>
+                            <textarea id="res-mensaje" rows="3" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors resize-none" placeholder="Alergias, preferencia de asiento, aniversario..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-brand-orange text-black font-medium tracking-widest text-xs uppercase hover:bg-brand-bright transition-all duration-300 orange-glow">
+                            Confirmar Reserva
+                        </button>
+                    </form>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <div class="space-y-2">
-          <label class="text-xs uppercase tracking-wider text-zinc-300 font-medium">Peticiones Especiales (Opcional)</label>
-          <textarea id="res-mensaje" rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-orange transition-all resize-none" placeholder="Alergias, ocasión especial, ubicación preferida..."></textarea>
+    <!-- Footer -->
+    <footer class="bg-black border-t border-neutral-900 py-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+            <span class="text-xl font-serif text-white tracking-widest">ÁMBAR CUISINE</span>
+            <p class="text-xs text-neutral-600 font-light">&copy; 2026 Ámbar Cuisine. Todos los derechos reservados.</p>
+            <div class="flex items-center space-x-6 text-xs uppercase tracking-widest">
+                <a href="/admin/" class="text-brand-orange hover:underline">Panel Admin</a>
+                <a href="#inicio" class="text-neutral-400 hover:text-white">Volver Arriba</a>
+            </div>
         </div>
+    </footer>
 
-        <div id="form-feedback" class="hidden p-4 rounded-xl text-xs font-medium text-center"></div>
+    <script>
+        // Animaciones al hacer Scroll
+        const observerOptions = { threshold: 0.15 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal-active');
+                }
+            });
+        }, observerOptions);
 
-        <button type="submit" id="submit-btn" class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-orange to-brand-accent text-black font-bold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-[0_0_30px_rgba(249,115,22,0.4)] flex items-center justify-center gap-2">
-          <span>Confirmar Reservación</span>
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </form>
-    </div>
-  </section>
+        document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
 
-  <!-- Footer -->
-  <footer class="bg-black border-t border-zinc-900 py-12 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-brand-orange flex items-center justify-center text-black font-serif font-bold text-sm">
-          Á
-        </div>
-        <span class="font-serif text-base tracking-widest text-white font-bold">ÁMBAR CUISINE</span>
-      </div>
-
-      <p class="text-xs text-zinc-500">
-        © 2026 ÁMBAR Cuisine. Todos los derechos reservados.
-      </p>
-
-      <div class="flex items-center gap-4">
-        <a href="/admin/" class="text-xs text-zinc-400 hover:text-brand-orange transition-colors">Panel Admin</a>
-        <a href="#" class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-brand-orange hover:border-brand-orange transition-all">
-          <i class="fa-brands fa-instagram"></i>
-        </a>
-        <a href="#" class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-brand-orange hover:border-brand-orange transition-all">
-          <i class="fa-brands fa-tripadvisor"></i>
-        </a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scripts de Interacción y Animación Scroll -->
-  <script>
-    // Configuración de Supabase (Reemplazar con tus credenciales reales)
-    const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
-    const SUPABASE_ANON_KEY = 'TU-ANON-KEY-AQUI';
-
-    let supabaseClient = null;
-    if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'https://TU-PROYECTO.supabase.co') {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-
-    const DEFAULT_HOURS = [
-      '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM',
-      '07:00 PM', '08:00 PM', '09:00 PM', '10:00 PM'
-    ];
-
-    document.addEventListener('DOMContentLoaded', () => {
-      // 1. Configurar fecha por defecto en el input (hoy)
-      const dateInput = document.getElementById('res-fecha');
-      const today = new Date().toISOString().split('T')[0];
-      dateInput.value = today;
-      loadAvailableHoursForDate(today);
-
-      dateInput.addEventListener('change', (e) => {
-        loadAvailableHoursForDate(e.target.value);
-      });
-
-      // 2. Intersection Observer para Animaciones Suaves de Scroll
-      const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.15
-      };
-
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-
-      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
-        observer.observe(el);
-      });
-
-      // 3. Manejo del formulario de reserva
-      const form = document.getElementById('reservation-form');
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const submitBtn = document.getElementById('submit-btn');
-        const feedback = document.getElementById('form-feedback');
-
-        const nombre = document.getElementById('res-nombre').value;
-        const email = document.getElementById('res-email').value;
-        const personas = parseInt(document.getElementById('res-personas').value);
-        const fecha = document.getElementById('res-fecha').value;
-        const hora = document.getElementById('res-hora').value;
-        const mensaje = document.getElementById('res-mensaje').value;
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i><span>Procesando...</span>';
-
-        if (supabaseClient) {
-          try {
-            const { error } = await supabaseClient
-              .from('reservaciones')
-              .insert([{ nombre, email, personas, fecha, hora, mensaje, estado: 'pendiente' }]);
-
-            if (error) throw error;
-
-            feedback.className = 'p-4 rounded-xl text-xs font-medium text-center bg-emerald-950/40 border border-emerald-500/40 text-emerald-400';
-            feedback.innerHTML = '¡Reservación enviada con éxito! Te esperamos en ÁMBAR Cuisine.';
-            feedback.classList.remove('hidden');
-            form.reset();
-            dateInput.value = today;
-            loadAvailableHoursForDate(today);
-          } catch (err) {
-            console.error(err);
-            feedback.className = 'p-4 rounded-xl text-xs font-medium text-center bg-rose-950/40 border border-rose-500/40 text-rose-400';
-            feedback.innerHTML = 'Hubo un error al procesar tu reserva. Intenta de nuevo.';
-            feedback.classList.remove('hidden');
-          }
-        } else {
-          // Modo simulación local
-          setTimeout(() => {
-            feedback.className = 'p-4 rounded-xl text-xs font-medium text-center bg-emerald-950/40 border border-emerald-500/40 text-emerald-400';
-            feedback.innerHTML = '¡Reservación simulada con éxito! (Configura Supabase para base de datos real).';
-            feedback.classList.remove('hidden');
-            form.reset();
-            dateInput.value = today;
-            loadAvailableHoursForDate(today);
-          }, 800);
-        }
-
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Confirmar Reservación</span><i class="fa-solid fa-arrow-right"></i>';
-      });
-    });
-
-    // Cargar horas disponibles según lo que el Admin haya configurado en Supabase
-    async function loadAvailableHoursForDate(dateStr) {
-      const horaSelect = document.getElementById('res-hora');
-      horaSelect.innerHTML = '<option value="">Cargando horas...</option>';
-
-      let blockedHours = [];
-
-      if (supabaseClient) {
-        try {
-          const { data, error } = await supabaseClient
-            .from('horarios_disponibles')
-            .select('*')
-            .eq('fecha', dateStr);
-
-          if (!error && data) {
-            blockedHours = data.filter(d => !d.disponible).map(d => d.hora);
-          }
-        } catch (e) {
-          console.error("Error consultando turnos", e);
-        }
-      }
-
-      horaSelect.innerHTML = '';
-      let availableCount = 0;
-
-      DEFAULT_HOURS.forEach(hour => {
-        const isBlocked = blockedHours.includes(hour);
-        const option = document.createElement('option');
-        option.value = hour;
-
-        if (isBlocked) {
-          option.textContent = `${hour} (No disponible / Ocupado)`;
-          option.disabled = true;
-          option.className = 'text-zinc-600 bg-zinc-950';
-        } else {
-          option.textContent = `${hour} - Disponible`;
-          availableCount++;
-        }
-        horaSelect.appendChild(option);
-      });
-
-      if (availableCount === 0) {
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = 'No hay horarios disponibles para esta fecha';
-        option.disabled = true;
-        horaSelect.appendChild(option);
-      }
-    }
-  </script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+    </script>
 </body>
 </html>
