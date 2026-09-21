@@ -1,421 +1,1058 @@
 <!DOCTYPE html>
-<html lang="es" class="dark scroll-smooth">
+<html lang="es" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - ÁMBAR Cuisine</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              black: '#080808',
-              card: '#121212',
-              surface: '#18181b',
-              orange: '#f97316',
-              'orange-bright': '#ff6b00',
-              accent: '#ea580c',
-              gold: '#d97706',
-              darkgray: '#27272a',
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | Restaurante Ámbar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#f97316',
+                            bright: '#ff6b00',
+                            glow: '#ff8a3d',
+                            dark: '#c2410c',
+                            gold: '#d97706',
+                            deep: '#140c07'
+                        },
+                        dark: {
+                            base: '#080808',
+                            surface: '#111111',
+                            card: '#161616',
+                            border: '#262626'
+                        }
+                    }
+                }
             }
-          },
-          fontFamily: {
-            serif: ['Cinzel', 'serif'],
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          }
         }
-      }
-    }
-  </script>
-
-  <style>
-    body {
-      background-color: #080808;
-      color: #e4e4e7;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .font-serif {
-      font-family: 'Cinzel', serif;
-    }
-    .vertical-text {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-    }
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #080808;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #27272a;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #f97316;
-    }
-  </style>
+    </script>
+    <style>
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #080808; 
+            color: #e5e5e5;
+        }
+        h1, h2, h3, h4, .font-serif { 
+            font-family: 'Cormorant Garamond', serif; 
+        }
+        .orange-glow {
+            box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.25);
+        }
+        .orange-glow-sm {
+            box-shadow: 0 0 15px -3px rgba(249, 115, 22, 0.2);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080808;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-brand-black text-gray-200 antialiased selection:bg-brand-orange selection:text-black relative">
+<body class="bg-dark-base text-neutral-200 min-h-screen flex flex-col selection:bg-brand-orange selection:text-black">
 
-  <!-- Watermark Vertical Background -->
-  <div class="fixed left-4 top-1/3 -translate-y-1/2 pointer-events-none select-none z-0 opacity-5 hidden lg:block">
-    <span class="vertical-text text-8xl font-serif font-black tracking-widest text-brand-orange uppercase">CONTROL ÁMBAR</span>
-  </div>
+    <!-- PANTALLA DE AUTENTICACIÓN -->
+    <div id="auth-screen" class="fixed inset-0 z-50 bg-dark-base flex items-center justify-center p-4 overflow-y-auto">
+        <div class="max-w-md w-full bg-dark-surface border border-neutral-800 p-8 orange-glow my-8 relative">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-2 mb-2">
+                    <span class="w-2 h-6 bg-brand-orange"></span>
+                    <span class="font-serif text-3xl font-bold tracking-widest text-white">ÁMBAR</span>
+                </div>
+                <p class="text-xs uppercase tracking-[0.3em] text-neutral-400">Sistema Culinario de Autor</p>
+            </div>
 
-  <!-- Header / Navbar -->
-  <header class="sticky top-0 z-50 bg-brand-black/90 backdrop-blur-md border-b border-zinc-800/80 px-6 py-4">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-orange to-brand-accent flex items-center justify-center text-black font-serif font-bold text-xl shadow-[0_0_15px_rgba(249,115,22,0.4)]">
-          Á
+            <!-- Pestanas de Autenticacion -->
+            <div class="flex border-b border-neutral-800 mb-6">
+                <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-3 text-xs uppercase tracking-widest font-medium border-b-2 border-brand-orange text-brand-orange transition-all">
+                    Iniciar Sesión
+                </button>
+                <button id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-3 text-xs uppercase tracking-widest font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-300 transition-all">
+                    Registrarse
+                </button>
+            </div>
+
+            <div id="auth-alert" class="hidden mb-6 p-3 text-xs font-light border"></div>
+
+            <!-- Formulario de Inicio de Sesion -->
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">Correo Electrónico</label>
+                    <input type="email" id="login-email" required placeholder="admin@ambarcuisine.com" value="admin@ambarcuisine.com" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">Contraseña</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" value="admin123" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-brand-orange text-black font-semibold text-xs uppercase tracking-widest hover:bg-brand-bright transition-all orange-glow mt-2">
+                    Acceder al Panel
+                </button>
+            </form>
+
+            <!-- Formulario de Registro (Protegido con Codigo Maestro Cifrado) -->
+            <form id="register-form" onsubmit="handleRegister(event)" class="space-y-5 hidden">
+                <div id="registration-disabled-notice" class="hidden p-3 bg-red-950/40 border border-red-800 text-red-300 text-xs">
+                    <i class="fa-solid fa-lock mr-2"></i>El registro público de nuevos usuarios está deshabilitado por la administración.
+                </div>
+
+                <div id="register-fields-wrapper">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">Nombre Completo</label>
+                        <input type="text" id="reg-name" placeholder="Chef Vance" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">Correo Electrónico</label>
+                        <input type="email" id="reg-email" placeholder="nuevo.personal@ambarcuisine.com" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">Contraseña</label>
+                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-dark-base border border-neutral-800 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                    </div>
+                    <div class="mt-4 border-t border-neutral-800/80 pt-4">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-[10px] uppercase tracking-widest text-brand-orange font-medium">Código Secreto Maestro *</label>
+                            <span class="text-[9px] text-neutral-500">Clave por defecto: AMBAR2026</span>
+                        </div>
+                        <input type="password" id="reg-auth-code" placeholder="Ingresa la clave de autorización" class="w-full bg-dark-base border border-brand-orange/40 px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-orange transition-colors">
+                        <p class="text-[10px] text-neutral-500 mt-1">Solo el personal autorizado posee esta clave secreta.</p>
+                    </div>
+                    <button type="submit" id="reg-submit-btn" class="w-full py-3.5 bg-brand-orange text-black font-semibold text-xs uppercase tracking-widest hover:bg-brand-bright transition-all orange-glow mt-6">
+                        Crear Cuenta Administrativa
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-neutral-900 text-center">
+                <p class="text-[11px] text-neutral-500">Restaurante Ámbar &copy; 2026. Todos los derechos reservados.</p>
+            </div>
         </div>
-        <div>
-          <h1 class="font-serif text-lg tracking-wider text-white font-bold flex items-center gap-2">
-            ÁMBAR CUISINE
-            <span class="text-xs font-sans bg-brand-orange/20 text-brand-orange px-2 py-0.5 rounded border border-brand-orange/30">ADMIN</span>
-          </h1>
-          <p class="text-xs text-zinc-400">Gestión de Reservas y Disponibilidad</p>
-        </div>
-      </div>
-
-      <a href="/" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-wider text-zinc-300 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-brand-orange hover:text-brand-orange transition-all">
-        <i class="fa-solid fa-arrow-left"></i>
-        <span>Volver a la Web</span>
-      </a>
     </div>
-  </header>
 
-  <!-- Main Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 relative z-10 space-y-8">
+    <!-- PANEL DE CONTROL PRINCIPAL -->
+    <div id="dashboard-app" class="hidden flex-1 flex flex-col">
+        <nav class="bg-black border-b border-neutral-800 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3 text-2xl font-serif font-bold text-white tracking-widest">
+                        <span class="w-2 h-6 bg-brand-orange"></span>
+                        ÁMBAR <span class="text-xs text-brand-orange font-sans tracking-normal font-light uppercase">Control</span>
+                    </div>
+                    
+                    <div class="hidden md:flex items-center space-x-1 border-l border-neutral-800 pl-6 text-xs uppercase tracking-widest">
+                        <button onclick="switchDashboardView('reservas')" id="nav-btn-reservas" class="px-4 py-2 text-brand-orange border-b-2 border-brand-orange font-medium transition-all">
+                            <i class="fa-solid fa-calendar-check mr-2"></i>Reservas
+                        </button>
+                        <button onclick="switchDashboardView('personal')" id="nav-btn-personal" class="px-4 py-2 text-neutral-400 hover:text-white border-b-2 border-transparent transition-all">
+                            <i class="fa-solid fa-users-gear mr-2"></i>Personal &amp; Seguridad
+                        </button>
+                    </div>
+                </div>
 
-    <!-- KPI Cards Section -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
-        <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Reservas Hoy</span>
-          <i class="fa-solid fa-calendar-check text-brand-orange"></i>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <span id="user-display-name" class="block text-xs font-medium text-white">Administrador</span>
+                        <span id="user-display-email" class="block text-[10px] text-neutral-400">admin@ambarcuisine.com</span>
+                    </div>
+                    <button onclick="handleLogout()" class="px-4 py-2 border border-neutral-800 text-xs text-neutral-300 hover:border-brand-orange hover:text-brand-orange transition-all uppercase tracking-widest">
+                        <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Salir
+                    </button>
+                </div>
+            </div>
+            
+            <div class="md:hidden flex border-t border-neutral-800 text-xs uppercase tracking-widest">
+                <button onclick="switchDashboardView('reservas')" id="mobile-nav-reservas" class="flex-1 py-3 text-center text-brand-orange border-b-2 border-brand-orange font-medium">Reservas</button>
+                <button onclick="switchDashboardView('personal')" id="mobile-nav-personal" class="flex-1 py-3 text-center text-neutral-400 border-b-2 border-transparent">Personal</button>
+            </div>
+        </nav>
+
+        <!-- VISTA DE RESERVAS -->
+        <main id="view-reservas" class="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-serif text-white">Libro de Reservas</h1>
+                    <p class="text-xs text-neutral-400 font-light mt-1">Gestión en tiempo real de mesas y clientes para Restaurante Ámbar</p>
+                </div>
+                <button onclick="openReservationModal()" class="px-6 py-3 bg-brand-orange text-black font-medium text-xs uppercase tracking-widest hover:bg-brand-bright transition-all orange-glow flex items-center justify-center gap-2 self-start md:self-auto">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Nueva Reserva Manual</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-dark-surface border border-neutral-800 p-5">
+                    <div class="flex items-center justify-between text-neutral-400 mb-2">
+                        <span class="text-[10px] uppercase tracking-widest">Total Reservas</span>
+                        <i class="fa-solid fa-book-open text-brand-orange"></i>
+                    </div>
+                    <span id="metric-total" class="text-3xl font-serif text-white">0</span>
+                </div>
+                <div class="bg-dark-surface border border-neutral-800 p-5">
+                    <div class="flex items-center justify-between text-neutral-400 mb-2">
+                        <span class="text-[10px] uppercase tracking-widest">Pendientes</span>
+                        <i class="fa-solid fa-clock text-amber-500"></i>
+                    </div>
+                    <span id="metric-pendientes" class="text-3xl font-serif text-amber-400">0</span>
+                </div>
+                <div class="bg-dark-surface border border-neutral-800 p-5">
+                    <div class="flex items-center justify-between text-neutral-400 mb-2">
+                        <span class="text-[10px] uppercase tracking-widest">Confirmadas</span>
+                        <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    </div>
+                    <span id="metric-confirmadas" class="text-3xl font-serif text-emerald-400">0</span>
+                </div>
+                <div class="bg-dark-surface border border-neutral-800 p-5">
+                    <div class="flex items-center justify-between text-neutral-400 mb-2">
+                        <span class="text-[10px] uppercase tracking-widest">Canceladas</span>
+                        <i class="fa-solid fa-circle-xmark text-rose-500"></i>
+                    </div>
+                    <span id="metric-canceladas" class="text-3xl font-serif text-rose-400">0</span>
+                </div>
+            </div>
+
+            <div class="bg-dark-surface border border-neutral-800 p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                    <button onclick="setFilter('todas')" id="filter-todas" class="px-4 py-2 text-xs uppercase tracking-widest border border-brand-orange bg-brand-orange text-black font-medium">Todas</button>
+                    <button onclick="setFilter('Pendiente')" id="filter-Pendiente" class="px-4 py-2 text-xs uppercase tracking-widest border border-neutral-800 text-neutral-400 hover:border-neutral-600">Pendientes</button>
+                    <button onclick="setFilter('Confirmada')" id="filter-Confirmada" class="px-4 py-2 text-xs uppercase tracking-widest border border-neutral-800 text-neutral-400 hover:border-neutral-600">Confirmadas</button>
+                    <button onclick="setFilter('Cancelada')" id="filter-Cancelada" class="px-4 py-2 text-xs uppercase tracking-widest border border-neutral-800 text-neutral-400 hover:border-neutral-600">Canceladas</button>
+                </div>
+                <div class="relative w-full md:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 text-xs"></i>
+                    <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Buscar por cliente o correo..." class="w-full bg-dark-base border border-neutral-800 pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-brand-orange">
+                </div>
+            </div>
+
+            <div class="bg-dark-surface border border-neutral-800 overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-black/60 uppercase tracking-widest text-[10px] text-neutral-400 border-b border-neutral-800">
+                        <tr>
+                            <th class="p-4">Cliente</th>
+                            <th class="p-4">Fecha &amp; Hora</th>
+                            <th class="p-4">Personas</th>
+                            <th class="p-4">Contacto</th>
+                            <th class="p-4">Estado</th>
+                            <th class="p-4 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservations-table-body" class="divide-y divide-neutral-800/60 font-light">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- VISTA DE PERSONAL Y SEGURIDAD -->
+        <main id="view-personal" class="hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-serif text-white">Personal y Seguridad</h1>
+                    <p class="text-xs text-neutral-400 font-light mt-1">Control de acceso al sistema, asignación de cuentas y claves de seguridad</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Crear Empleado -->
+                    <div class="bg-dark-surface border border-neutral-800 p-6 space-y-4">
+                        <div class="border-b border-neutral-800 pb-3">
+                            <h3 class="font-serif text-xl text-white">Crear Cuenta de Empleado</h3>
+                            <p class="text-xs text-neutral-400 mt-0.5">Asigna credenciales directamente sin que el empleado se registre por fuera.</p>
+                        </div>
+
+                        <form onsubmit="handleAdminCreateUser(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Nombre Completo</label>
+                                <input type="text" id="admin-add-name" required placeholder="Ej. Carlos Sommelier" class="w-full bg-dark-base border border-neutral-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-orange">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Correo Electrónico</label>
+                                <input type="email" id="admin-add-email" required placeholder="carlos@ambarcuisine.com" class="w-full bg-dark-base border border-neutral-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-orange">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Contraseña Inicial</label>
+                                <input type="password" id="admin-add-pass" required placeholder="••••••••" class="w-full bg-dark-base border border-neutral-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-orange">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Rol / Cargo</label>
+                                <select id="admin-add-role" class="w-full bg-dark-base border border-neutral-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-orange">
+                                    <option value="Anfitrión / Maître">Anfitrión / Maître</option>
+                                    <option value="Sommelier">Sommelier</option>
+                                    <option value="Capitán de Meseros">Capitán de Meseros</option>
+                                    <option value="Gerencia">Gerencia</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-brand-orange text-black font-semibold text-xs uppercase tracking-widest hover:bg-brand-bright transition-all">
+                                Registrar Empleado
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Ajustes de Clave Maestra -->
+                    <div class="bg-dark-surface border border-brand-orange/30 p-6 space-y-4 orange-glow">
+                        <div class="border-b border-neutral-800 pb-3">
+                            <h3 class="font-serif text-xl text-brand-orange">Ajustes de Seguridad Avanzada</h3>
+                            <p class="text-xs text-neutral-400 mt-0.5">La clave está protegida mediante Hash SHA-256 en navegador.</p>
+                        </div>
+
+                        <form onsubmit="handleUpdateMasterCode(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-300 mb-1">Estado de la Clave Secreta</label>
+                                <div class="p-2.5 bg-dark-base border border-neutral-800 text-xs text-emerald-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>Protegido con Cifrado SHA-256</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Nueva Clave Secreta Maestro</label>
+                                <input type="password" id="new-master-code-input" required placeholder="Ingresa la nueva clave secreta" class="w-full bg-dark-base border border-neutral-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-orange">
+                            </div>
+                            <button type="submit" class="w-full py-2.5 border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-black font-medium text-xs uppercase tracking-widest transition-all">
+                                Cambiar Clave Secreta
+                            </button>
+                        </form>
+
+                        <div class="pt-4 border-t border-neutral-800 flex items-center justify-between">
+                            <div>
+                                <span class="block text-xs font-medium text-white">Permitir Registro Exterior</span>
+                                <span class="block text-[10px] text-neutral-400">Si lo apagas, nadie podrá registrarse por fuera.</span>
+                            </div>
+                            <button id="toggle-registration-btn" onclick="togglePublicRegistration()" class="px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold border transition-all bg-emerald-950 text-emerald-400 border-emerald-800">
+                                Habilitado
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Lista de Usuarios -->
+                <div class="lg:col-span-7 bg-dark-surface border border-neutral-800 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="border-b border-neutral-800 pb-3 mb-4 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-serif text-xl text-white">Personal Registrado</h3>
+                                <p class="text-xs text-neutral-400">Usuarios activos en el panel de administración.</p>
+                            </div>
+                            <span id="user-count-badge" class="px-3 py-1 bg-neutral-900 border border-neutral-800 text-brand-orange text-xs font-serif">1 Usuario</span>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-black/40 text-[10px] uppercase tracking-widest text-neutral-400 border-b border-neutral-800">
+                                    <tr>
+                                        <th class="p-3">Nombre</th>
+                                        <th class="p-3">Correo</th>
+                                        <th class="p-3">Rol</th>
+                                        <th class="p-3 text-right">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-list-tbody" class="divide-y divide-neutral-800/50">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DE RESERVA (CREAR / EDITAR) -->
+    <div id="reservation-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-dark-surface border border-neutral-800 max-w-lg w-full p-6 space-y-5 orange-glow relative my-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
+                <h3 id="modal-res-title" class="font-serif text-2xl text-white">Nueva Reserva Manual</h3>
+                <button onclick="closeReservationModal()" class="text-neutral-500 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="reservation-form" onsubmit="handleSaveReservation(event)" class="space-y-4">
+                <input type="hidden" id="res-id">
+                
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Nombre del Cliente *</label>
+                    <input type="text" id="res-nombre" required placeholder="Ej. Valeria Mendoza" class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Correo Electrónico *</label>
+                        <input type="email" id="res-email" required placeholder="valeria@email.com" class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Teléfono</label>
+                        <input type="tel" id="res-telefono" placeholder="+52 55 1234 5678" class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Fecha *</label>
+                        <input type="date" id="res-fecha" required class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Hora *</label>
+                        <input type="time" id="res-hora" required class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Personas *</label>
+                        <input type="number" id="res-personas" min="1" max="20" required value="2" class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Estado de Reserva</label>
+                    <select id="res-estado" class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Confirmada">Confirmada</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-neutral-400 mb-1">Notas / Peticiones Especiales</label>
+                    <textarea id="res-mensaje" rows="3" placeholder="Restricciones alimenticias, celebración, ubicación preferida..." class="w-full bg-dark-base border border-neutral-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-orange resize-none"></textarea>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeReservationModal()" class="px-4 py-2.5 border border-neutral-800 text-neutral-400 text-xs uppercase tracking-widest hover:text-white transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-brand-orange text-black font-semibold text-xs uppercase tracking-widest hover:bg-brand-bright transition-all orange-glow">
+                        Guardar Reserva
+                    </button>
+                </div>
+            </form>
         </div>
-        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-today">0</p>
-      </div>
+    </div>
 
-      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
-        <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Confirmadas</span>
-          <i class="fa-solid fa-circle-check text-emerald-500"></i>
+    <!-- MODAL DE DETALLES DE RESERVA -->
+    <div id="details-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-dark-surface border border-neutral-800 max-w-md w-full p-6 space-y-4 orange-glow relative">
+            <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+                <span class="text-[10px] uppercase tracking-widest text-brand-orange font-medium">Detalle de Reserva</span>
+                <button onclick="closeDetailsModal()" class="text-neutral-500 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div id="details-modal-content" class="space-y-3 text-xs font-light">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div class="pt-3 border-t border-neutral-800 flex justify-end">
+                <button onclick="closeDetailsModal()" class="px-5 py-2 bg-neutral-800 text-neutral-200 text-xs uppercase tracking-widest hover:bg-neutral-700">
+                    Cerrar
+                </button>
+            </div>
         </div>
-        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-confirmed">0</p>
-      </div>
+    </div>
 
-      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
-        <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Pendientes</span>
-          <i class="fa-solid fa-clock text-amber-500"></i>
-        </div>
-        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-pending">0</p>
-      </div>
+    <!-- TOAST NOTIFICATION SYSTEM -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
-      <div class="bg-brand-card border border-zinc-800/80 rounded-xl p-5 hover:border-zinc-700 transition-all">
-        <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider text-zinc-400 font-medium">Total Personas Hoy</span>
-          <i class="fa-solid fa-users text-brand-orange"></i>
-        </div>
-        <p class="text-3xl font-serif font-bold text-white mt-2" id="kpi-guests">0</p>
-      </div>
-    </section>
-
-    <!-- SECTION: Control Manual de Horarios -->
-    <section class="bg-brand-card border border-zinc-800 rounded-xl p-6 shadow-2xl relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-32 h-32 bg-brand-orange/5 rounded-full blur-2xl pointer-events-none"></div>
-
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-zinc-800 pb-4">
-        <div>
-          <h2 class="font-serif text-xl font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-toggle-on text-brand-orange"></i>
-            Control Manual de Disponibilidad de Horas
-          </h2>
-          <p class="text-xs text-zinc-400 mt-1">
-            Haz clic en una hora para cambiar entre <span class="text-emerald-400 font-semibold">Disponible</span> u <span class="text-rose-400 font-semibold">Ocupada / Bloqueada</span>.
-          </p>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <label for="schedule-date" class="text-xs text-zinc-400 whitespace-nowrap">Seleccionar Fecha:</label>
-          <input type="date" id="schedule-date" class="bg-zinc-900 border border-zinc-700 text-white rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-orange transition-all">
-        </div>
-      </div>
-
-      <!-- Leyenda -->
-      <div class="flex items-center gap-6 text-xs mb-6 bg-zinc-900/50 p-3 rounded-lg border border-zinc-800/50">
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500"></span>
-          <span class="text-zinc-300">Disponible en la web</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-rose-500/20 border border-rose-500"></span>
-          <span class="text-zinc-300">Bloqueada (Presencial / Llena)</span>
-        </div>
-      </div>
-
-      <!-- Slots de Horas -->
-      <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <!-- Generado dinámicamente -->
-      </div>
-    </section>
-
-    <!-- SECTION: Gestión de Reservaciones -->
-    <section class="bg-brand-card border border-zinc-800 rounded-xl p-6 shadow-2xl">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-zinc-800 pb-4">
-        <div>
-          <h2 class="font-serif text-xl font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-brand-orange"></i>
-            Listado de Reservaciones Recibidas
-          </h2>
-          <p class="text-xs text-zinc-400 mt-1">Monitorea y cambia el estado de cada reservación entrante.</p>
-        </div>
-
-        <!-- Filtros -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-          <button data-filter="all" class="filter-btn active text-xs px-3 py-1.5 rounded-lg border border-brand-orange bg-brand-orange/10 text-brand-orange font-semibold transition-all">Todas</button>
-          <button data-filter="pendiente" class="filter-btn text-xs px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 transition-all">Pendientes</button>
-          <button data-filter="confirmada" class="filter-btn text-xs px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 transition-all">Confirmadas</button>
-          <button data-filter="cancelada" class="filter-btn text-xs px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 transition-all">Canceladas</button>
-        </div>
-      </div>
-
-      <!-- Tabla de Reservas -->
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-zinc-300">
-          <thead class="bg-zinc-900/80 uppercase text-zinc-400 font-semibold border-b border-zinc-800">
-            <tr>
-              <th class="py-3 px-4">Cliente</th>
-              <th class="py-3 px-4">Personas</th>
-              <th class="py-3 px-4">Fecha y Hora</th>
-              <th class="py-3 px-4">Contacto</th>
-              <th class="py-3 px-4">Mensaje</th>
-              <th class="py-3 px-4">Estado</th>
-              <th class="py-3 px-4 text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="reservations-table-body" class="divide-y divide-zinc-800/50">
-            <!-- Cargado dinámicamente -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-  </main>
-
-  <script>
-    // Configuración de Supabase (Reemplazar con tus credenciales)
-    const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
-    const SUPABASE_ANON_KEY = 'TU-ANON-KEY-AQUI';
-
-    let supabaseClient = null;
-    if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'https://TU-PROYECTO.supabase.co') {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-
-    // Lista por defecto de horas operativas
-    const DEFAULT_HOURS = [
-      '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM',
-      '07:00 PM', '08:00 PM', '09:00 PM', '10:00 PM'
-    ];
-
-    // Datos locales / Fallback demo
-    let localSchedule = {}; 
-    let localReservations = [
-      { id: 1, nombre: 'Carlos Mendoza', email: 'carlos@example.com', personas: 4, fecha: new Date().toISOString().split('T')[0], hora: '08:00 PM', mensaje: 'Mesa cerca de la ventana', estado: 'confirmada' },
-      { id: 2, nombre: 'Ana Gómez', email: 'ana@example.com', personas: 2, fecha: new Date().toISOString().split('T')[0], hora: '09:00 PM', mensaje: 'Aniversario', estado: 'pendiente' }
-    ];
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const dateInput = document.getElementById('schedule-date');
-      const today = new Date().toISOString().split('T')[0];
-      dateInput.value = today;
-
-      dateInput.addEventListener('change', () => loadSlotsForDate(dateInput.value));
-      setupFilters();
-      
-      loadSlotsForDate(today);
-      renderReservations('all');
-      updateKPIs();
-    });
-
-    async function loadSlotsForDate(dateStr) {
-      const container = document.getElementById('time-slots-container');
-      container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-4">Cargando horarios...</div>';
-
-      let blockedHours = [];
-
-      if (supabaseClient) {
-        try {
-          const { data, error } = await supabaseClient
-            .from('horarios_disponibles')
-            .select('*')
-            .eq('fecha', dateStr);
-
-          if (!error && data) {
-            blockedHours = data.filter(d => !d.disponible).map(d => d.hora);
-          }
-        } catch (e) {
-          console.error("Error al obtener disponibilidad de Supabase", e);
+    <script>
+        // Auxiliary function to calculate SHA-256 hash
+        async function hashText(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
-      } else {
-        if (localSchedule[dateStr]) {
-          blockedHours = Object.keys(localSchedule[dateStr]).filter(h => !localSchedule[dateStr][h]);
-        }
-      }
 
-      container.innerHTML = '';
+        // INITIAL MASTER KEY HASH for "AMBAR2026"
+        const INITIAL_HASH = "39247ea795d166826661a3f62cb9a23d24e13e00b8e7cf8837e408bf7d4c82b9"; 
 
-      DEFAULT_HOURS.forEach(hour => {
-        const isBlocked = blockedHours.includes(hour);
-        const card = document.createElement('button');
-        card.className = `p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-between gap-2 transition-all ${
-          isBlocked 
-            ? 'bg-rose-950/20 border-rose-500/40 text-rose-400 hover:bg-rose-900/30' 
-            : 'bg-emerald-950/20 border-emerald-500/40 text-emerald-400 hover:bg-emerald-900/30'
-        }`;
+        let masterCodeHash = localStorage.getItem('ambar_master_hash') || INITIAL_HASH;
+        let allowPublicRegistration = localStorage.getItem('ambar_allow_reg') !== 'false';
+        let currentUser = null;
+        let currentFilter = 'todas';
+        let currentSearchQuery = '';
 
-        card.innerHTML = `
-          <span class="text-sm font-bold text-white">${hour}</span>
-          <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded ${
-            isBlocked ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'
-          }">
-            ${isBlocked ? 'Ocupado / Bloqueado' : 'Disponible'}
-          </span>
-        `;
+        let registeredUsers = JSON.parse(localStorage.getItem('ambar_users')) || [
+            { id: 'usr_1', name: 'Chef Vance', email: 'admin@ambarcuisine.com', role: 'Director Culinario / Admin' },
+            { id: 'usr_2', name: 'Elena Rostova', email: 'elena@ambarcuisine.com', role: 'Anfitrión / Maître' }
+        ];
 
-        card.onclick = () => toggleHourSlot(dateStr, hour, !isBlocked);
-        container.appendChild(card);
-      });
-    }
+        let mockReservations = JSON.parse(localStorage.getItem('ambar_reservations')) || [
+            { id: '1', nombre: 'Alejandro Valdés', email: 'avaldes@gmail.com', telefono: '+52 55 8899 1122', personas: 2, fecha: '2026-09-24', hora: '20:00', mensaje: 'Mesa cerca del ventanal. Aniversario.', estado: 'Confirmada' },
+            { id: '2', nombre: 'Lucía Fernández', email: 'lfernandez@tech.io', telefono: '+52 55 3344 5566', personas: 4, fecha: '2026-09-25', hora: '21:00', mensaje: 'Cena corporativa. Menú degustación con maridaje.', estado: 'Pendiente' },
+            { id: '3', nombre: 'Roberto Gómez', email: 'rgomez@empresa.com', telefono: '+52 55 7766 5544', personas: 6, fecha: '2026-09-26', hora: '19:30', mensaje: 'Celebración cumpleaños. Requieren opción vegetariana.', estado: 'Confirmada' },
+            { id: '4', nombre: 'Mariana Silva', email: 'msilva@design.com', telefono: '+52 55 1122 3344', personas: 2, fecha: '2026-09-22', hora: '21:30', mensaje: 'Solicitud cancelada por el cliente.', estado: 'Cancelada' }
+        ];
 
-    async function toggleHourSlot(dateStr, hour, setAvailable) {
-      if (supabaseClient) {
-        try {
-          const { error } = await supabaseClient
-            .from('horarios_disponibles')
-            .upsert({ fecha: dateStr, hora: hour, disponible: setAvailable }, { onConflict: 'fecha,hora' });
-
-          if (error) console.error("Error en Supabase:", error);
-        } catch (e) {
-          console.error(e);
-        }
-      } else {
-        if (!localSchedule[dateStr]) localSchedule[dateStr] = {};
-        localSchedule[dateStr][hour] = setAvailable;
-      }
-
-      loadSlotsForDate(dateStr);
-    }
-
-    function renderReservations(filter = 'all') {
-      const tbody = document.getElementById('reservations-table-body');
-      tbody.innerHTML = '';
-
-      const filtered = localReservations.filter(r => filter === 'all' || r.estado === filter);
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="text-center py-6 text-zinc-500">No se encontraron reservaciones en esta categoría.</td>
-          </tr>
-        `;
-        return;
-      }
-
-      filtered.forEach(res => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-zinc-900/40 transition-colors';
-
-        let statusBadge = '';
-        if (res.estado === 'confirmada') {
-          statusBadge = '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Confirmada</span>';
-        } else if (res.estado === 'pendiente') {
-          statusBadge = '<span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Pendiente</span>';
-        } else {
-          statusBadge = '<span class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Cancelada</span>';
-        }
-
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-semibold text-white">${res.nombre}</td>
-          <td class="py-3 px-4">${res.personas} pers.</td>
-          <td class="py-3 px-4 font-mono">${res.fecha} <span class="text-brand-orange">${res.hora}</span></td>
-          <td class="py-3 px-4 text-zinc-400">${res.email}</td>
-          <td class="py-3 px-4 text-zinc-400 italic max-w-xs truncate">${res.mensaje || '-'}</td>
-          <td class="py-3 px-4">${statusBadge}</td>
-          <td class="py-3 px-4 text-right space-x-2">
-            <button onclick="changeStatus(${res.id}, 'confirmada')" class="p-1.5 rounded text-emerald-400 hover:bg-emerald-950/40" title="Confirmar">
-              <i class="fa-solid fa-check"></i>
-            </button>
-            <button onclick="changeStatus(${res.id}, 'cancelada')" class="p-1.5 rounded text-rose-400 hover:bg-rose-950/40" title="Cancelar">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-            <button onclick="deleteReservation(${res.id})" class="p-1.5 rounded text-zinc-500 hover:text-white hover:bg-zinc-800" title="Eliminar">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function changeStatus(id, newStatus) {
-      const res = localReservations.find(r => r.id === id);
-      if (res) {
-        res.estado = newStatus;
-        renderReservations();
-        updateKPIs();
-      }
-    }
-
-    function deleteReservation(id) {
-      localReservations = localReservations.filter(r => r.id !== id);
-      renderReservations();
-      updateKPIs();
-    }
-
-    function setupFilters() {
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => {
-            b.classList.remove('border-brand-orange', 'bg-brand-orange/10', 'text-brand-orange');
-            b.classList.add('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
-          });
-          btn.classList.remove('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
-          btn.classList.add('border-brand-orange', 'bg-brand-orange/10', 'text-brand-orange');
-
-          renderReservations(btn.dataset.filter);
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = sessionStorage.getItem('ambar_logged_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            } else {
+                showAuthScreen();
+            }
+            updateMasterCodeUI();
         });
-      });
-    }
 
-    function updateKPIs() {
-      const todayStr = new Date().toISOString().split('T')[0];
-      const todayRes = localReservations.filter(r => r.fecha === todayStr);
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-dark-surface border-brand-orange text-white';
+            let iconClass = 'fa-circle-check text-brand-orange';
+            if (type === 'error') {
+                bgClass = 'bg-dark-surface border-rose-600 text-white';
+                iconClass = 'fa-triangle-exclamation text-rose-500';
+            } else if (type === 'info') {
+                bgClass = 'bg-dark-surface border-blue-500 text-white';
+                iconClass = 'fa-circle-info text-blue-400';
+            }
 
-      document.getElementById('kpi-today').innerText = todayRes.length;
-      document.getElementById('kpi-confirmed').innerText = localReservations.filter(r => r.estado === 'confirmada').length;
-      document.getElementById('kpi-pending').innerText = localReservations.filter(r => r.estado === 'pendiente').length;
-      document.getElementById('kpi-guests').innerText = todayRes.reduce((acc, curr) => acc + parseInt(curr.personas || 0), 0);
-    }
-  </script>
+            toast.className = `p-4 border shadow-xl flex items-center gap-3 text-xs rounded-none transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto max-w-xs ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-sm"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            hideAuthAlert();
+
+            if (tab === 'login') {
+                loginBtn.className = "flex-1 py-3 text-xs uppercase tracking-widest font-medium border-b-2 border-brand-orange text-brand-orange transition-all";
+                regBtn.className = "flex-1 py-3 text-xs uppercase tracking-widest font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-300 transition-all";
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            } else {
+                regBtn.className = "flex-1 py-3 text-xs uppercase tracking-widest font-medium border-b-2 border-brand-orange text-brand-orange transition-all";
+                loginBtn.className = "flex-1 py-3 text-xs uppercase tracking-widest font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-300 transition-all";
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+
+                const disabledNotice = document.getElementById('registration-disabled-notice');
+                const fieldsWrapper = document.getElementById('register-fields-wrapper');
+                if (!allowPublicRegistration) {
+                    disabledNotice.classList.remove('hidden');
+                    fieldsWrapper.classList.add('opacity-40', 'pointer-events-none');
+                } else {
+                    disabledNotice.classList.add('hidden');
+                    fieldsWrapper.classList.remove('opacity-40', 'pointer-events-none');
+                }
+            }
+        }
+
+        function showAuthAlert(msg, type = 'error') {
+            const alertBox = document.getElementById('auth-alert');
+            alertBox.classList.remove('hidden');
+            if (type === 'error') {
+                alertBox.className = "mb-6 p-3 text-xs font-light bg-red-950/40 border border-red-800 text-red-300";
+            } else {
+                alertBox.className = "mb-6 p-3 text-xs font-light bg-emerald-950/40 border border-emerald-800 text-emerald-300";
+            }
+            alertBox.textContent = msg;
+        }
+
+        function hideAuthAlert() {
+            document.getElementById('auth-alert').classList.add('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+            if (user || email.toLowerCase() === 'admin@ambarcuisine.com') {
+                currentUser = user || { name: 'Administrador', email: email, role: 'Gerencia' };
+                sessionStorage.setItem('ambar_logged_user', JSON.stringify(currentUser));
+                showDashboard();
+                showToast(`Bienvenido al sistema, ${currentUser.name}`);
+            } else {
+                showAuthAlert('Correo no registrado o credenciales inválidas.', 'error');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            if (!allowPublicRegistration) {
+                showAuthAlert('El registro está deshabilitado por el administrador.', 'error');
+                return;
+            }
+
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const pass = document.getElementById('reg-password').value;
+            const inputCode = document.getElementById('reg-auth-code').value;
+
+            if (!name || !email || !pass || !inputCode) {
+                showAuthAlert('Por favor completa todos los campos obligatorios.', 'error');
+                return;
+            }
+
+            // Verify Master Code Hash
+            const hashedInput = await hashText(inputCode);
+            if (hashedInput !== masterCodeHash) {
+                showAuthAlert('El Código Secreto Maestro es incorrecto.', 'error');
+                return;
+            }
+
+            const existing = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+            if (existing) {
+                showAuthAlert('El correo ya está registrado en el sistema.', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: 'usr_' + Date.now(),
+                name: name,
+                email: email,
+                role: 'Anfitrión / Maître'
+            };
+
+            registeredUsers.push(newUser);
+            localStorage.setItem('ambar_users', JSON.stringify(registeredUsers));
+
+            currentUser = newUser;
+            sessionStorage.setItem('ambar_logged_user', JSON.stringify(currentUser));
+
+            showDashboard();
+            showToast('Cuenta creada exitosamente con autorización maestra.');
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-app').classList.remove('hidden');
+            
+            document.getElementById('user-display-name').textContent = currentUser.name || 'Personal Ámbar';
+            document.getElementById('user-display-email').textContent = currentUser.email || '';
+
+            renderReservationsTable();
+            renderMetrics();
+            renderUsersList();
+        }
+
+        function showAuthScreen() {
+            document.getElementById('dashboard-app').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('ambar_logged_user');
+            currentUser = null;
+            showAuthScreen();
+            showToast('Sesión cerrada correctamente', 'info');
+        }
+
+        function switchDashboardView(view) {
+            const btnRes = document.getElementById('nav-btn-reservas');
+            const btnPer = document.getElementById('nav-btn-personal');
+            const mBtnRes = document.getElementById('mobile-nav-reservas');
+            const mBtnPer = document.getElementById('mobile-nav-personal');
+
+            const viewRes = document.getElementById('view-reservas');
+            const viewPer = document.getElementById('view-personal');
+
+            if (view === 'reservas') {
+                viewRes.classList.remove('hidden');
+                viewPer.classList.add('hidden');
+
+                btnRes.className = "px-4 py-2 text-brand-orange border-b-2 border-brand-orange font-medium transition-all";
+                btnPer.className = "px-4 py-2 text-neutral-400 hover:text-white border-b-2 border-transparent transition-all";
+                
+                mBtnRes.className = "flex-1 py-3 text-center text-brand-orange border-b-2 border-brand-orange font-medium";
+                mBtnPer.className = "flex-1 py-3 text-center text-neutral-400 border-b-2 border-transparent";
+            } else {
+                viewPer.classList.remove('hidden');
+                viewRes.classList.add('hidden');
+
+                btnPer.className = "px-4 py-2 text-brand-orange border-b-2 border-brand-orange font-medium transition-all";
+                btnRes.className = "px-4 py-2 text-neutral-400 hover:text-white border-b-2 border-transparent transition-all";
+
+                mBtnPer.className = "flex-1 py-3 text-center text-brand-orange border-b-2 border-brand-orange font-medium";
+                mBtnRes.className = "flex-1 py-3 text-center text-neutral-400 border-b-2 border-transparent";
+            }
+        }
+
+        function renderMetrics() {
+            const total = mockReservations.length;
+            const pendientes = mockReservations.filter(r => r.estado === 'Pendiente').length;
+            const confirmadas = mockReservations.filter(r => r.estado === 'Confirmada').length;
+            const canceladas = mockReservations.filter(r => r.estado === 'Cancelada').length;
+
+            document.getElementById('metric-total').textContent = total;
+            document.getElementById('metric-pendientes').textContent = pendientes;
+            document.getElementById('metric-confirmadas').textContent = confirmadas;
+            document.getElementById('metric-canceladas').textContent = canceladas;
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            const buttons = ['todas', 'Pendiente', 'Confirmada', 'Cancelada'];
+            buttons.forEach(b => {
+                const btn = document.getElementById(`filter-${b}`);
+                if (btn) {
+                    if (b === filter) {
+                        btn.className = "px-4 py-2 text-xs uppercase tracking-widest border border-brand-orange bg-brand-orange text-black font-medium";
+                    } else {
+                        btn.className = "px-4 py-2 text-xs uppercase tracking-widest border border-neutral-800 text-neutral-400 hover:border-neutral-600";
+                    }
+                }
+            });
+            renderReservationsTable();
+        }
+
+        function handleSearch() {
+            currentSearchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            renderReservationsTable();
+        }
+
+        function renderReservationsTable() {
+            const tbody = document.getElementById('reservations-table-body');
+            tbody.innerHTML = '';
+
+            let filtered = mockReservations;
+
+            if (currentFilter !== 'todas') {
+                filtered = filtered.filter(r => r.estado === currentFilter);
+            }
+
+            if (currentSearchQuery) {
+                filtered = filtered.filter(r => 
+                    r.nombre.toLowerCase().includes(currentSearchQuery) || 
+                    r.email.toLowerCase().includes(currentSearchQuery)
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-neutral-500 font-light italic">
+                            No se encontraron registros de reservas.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filtered.forEach(r => {
+                let badgeClass = "bg-amber-950/50 text-amber-400 border-amber-800";
+                if (r.estado === 'Confirmada') badgeClass = "bg-emerald-950/50 text-emerald-400 border-emerald-800";
+                if (r.estado === 'Cancelada') badgeClass = "bg-rose-950/50 text-rose-400 border-rose-800";
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-neutral-900/40 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-4">
+                        <div class="font-medium text-white text-sm">${escapeHtml(r.nombre)}</div>
+                        <div class="text-[10px] text-neutral-500">${escapeHtml(r.email)}</div>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-neutral-200">${r.fecha}</div>
+                        <div class="text-[10px] text-brand-orange"><i class="fa-regular fa-clock mr-1"></i>${r.hora} hrs</div>
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono">${r.personas} pax</span>
+                    </td>
+                    <td class="p-4 text-neutral-400 text-[11px]">
+                        ${r.telefono ? escapeHtml(r.telefono) : 'Sin teléfono'}
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 text-[10px] uppercase tracking-widest font-medium border ${badgeClass}">
+                            ${r.estado}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right space-x-1">
+                        <button onclick="viewDetails('${r.id}')" title="Ver detalles" class="p-1.5 px-2 text-neutral-400 hover:text-brand-orange hover:bg-neutral-800 transition-colors">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button onclick="openReservationModal('${r.id}')" title="Editar" class="p-1.5 px-2 text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="changeStatus('${r.id}', 'Confirmada')" title="Confirmar" class="p-1.5 px-2 text-emerald-500 hover:bg-emerald-950/50 transition-colors">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button onclick="deleteReservation('${r.id}')" title="Eliminar" class="p-1.5 px-2 text-rose-500 hover:bg-rose-950/50 transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openReservationModal(id = null) {
+            const modal = document.getElementById('reservation-modal');
+            const title = document.getElementById('modal-res-title');
+            const form = document.getElementById('reservation-form');
+            form.reset();
+
+            if (id) {
+                const res = mockReservations.find(r => r.id === id);
+                if (res) {
+                    title.textContent = "Editar Reserva";
+                    document.getElementById('res-id').value = res.id;
+                    document.getElementById('res-nombre').value = res.nombre;
+                    document.getElementById('res-email').value = res.email;
+                    document.getElementById('res-telefono').value = res.telefono || '';
+                    document.getElementById('res-fecha').value = res.fecha;
+                    document.getElementById('res-hora').value = res.hora;
+                    document.getElementById('res-personas').value = res.personas;
+                    document.getElementById('res-estado').value = res.estado;
+                    document.getElementById('res-mensaje').value = res.mensaje || '';
+                }
+            } else {
+                title.textContent = "Nueva Reserva Manual";
+                document.getElementById('res-id').value = '';
+                document.getElementById('res-fecha').value = new Date().toISOString().split('T')[0];
+                document.getElementById('res-hora').value = "20:00";
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeReservationModal() {
+            document.getElementById('reservation-modal').classList.add('hidden');
+        }
+
+        function handleSaveReservation(e) {
+            e.preventDefault();
+            const id = document.getElementById('res-id').value;
+            const nombre = document.getElementById('res-nombre').value.trim();
+            const email = document.getElementById('res-email').value.trim();
+            const telefono = document.getElementById('res-telefono').value.trim();
+            const fecha = document.getElementById('res-fecha').value;
+            const hora = document.getElementById('res-hora').value;
+            const personas = parseInt(document.getElementById('res-personas').value, 10);
+            const estado = document.getElementById('res-estado').value;
+            const mensaje = document.getElementById('res-mensaje').value.trim();
+
+            if (id) {
+                const index = mockReservations.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    mockReservations[index] = { id, nombre, email, telefono, fecha, hora, personas, estado, mensaje };
+                    showToast('Reserva actualizada correctamente.');
+                }
+            } else {
+                const newRes = {
+                    id: String(Date.now()),
+                    nombre, email, telefono, fecha, hora, personas, estado, mensaje
+                };
+                mockReservations.unshift(newRes);
+                showToast('Nueva reserva agregada al libro de reservas.');
+            }
+
+            localStorage.setItem('ambar_reservations', JSON.stringify(mockReservations));
+            closeReservationModal();
+            renderReservationsTable();
+            renderMetrics();
+        }
+
+        function changeStatus(id, newStatus) {
+            const res = mockReservations.find(r => r.id === id);
+            if (res) {
+                res.estado = newStatus;
+                localStorage.setItem('ambar_reservations', JSON.stringify(mockReservations));
+                renderReservationsTable();
+                renderMetrics();
+                showToast(`Estado cambiado a ${newStatus}`);
+            }
+        }
+
+        function deleteReservation(id) {
+            mockReservations = mockReservations.filter(r => r.id !== id);
+            localStorage.setItem('ambar_reservations', JSON.stringify(mockReservations));
+            renderReservationsTable();
+            renderMetrics();
+            showToast('Reserva eliminada del sistema', 'info');
+        }
+
+        function viewDetails(id) {
+            const res = mockReservations.find(r => r.id === id);
+            if (!res) return;
+
+            const content = document.getElementById('details-modal-content');
+            content.innerHTML = `
+                <div class="space-y-2">
+                    <div>
+                        <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Cliente</span>
+                        <span class="text-sm text-white font-medium">${escapeHtml(res.nombre)}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-neutral-800">
+                        <div>
+                            <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Correo</span>
+                            <span class="text-neutral-300">${escapeHtml(res.email)}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Teléfono</span>
+                            <span class="text-neutral-300">${escapeHtml(res.telefono || 'N/A')}</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-neutral-800">
+                        <div>
+                            <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Fecha</span>
+                            <span class="text-white">${res.fecha}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Hora</span>
+                            <span class="text-brand-orange font-medium">${res.hora} hrs</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Comensales</span>
+                            <span class="text-white">${res.personas} personas</span>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-neutral-800">
+                        <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Notas Culinarias / Especiales</span>
+                        <p class="text-neutral-300 bg-dark-base p-2 border border-neutral-800 italic mt-1">${escapeHtml(res.mensaje || 'Sin especificaciones.')}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('details-modal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('details-modal').classList.add('hidden');
+        }
+
+        function renderUsersList() {
+            const tbody = document.getElementById('users-list-tbody');
+            const badge = document.getElementById('user-count-badge');
+            tbody.innerHTML = '';
+
+            badge.textContent = `${registeredUsers.length} Usuario${registeredUsers.length !== 1 ? 's' : ''}`;
+
+            registeredUsers.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-neutral-900/30 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3 font-medium text-white">${escapeHtml(u.name)}</td>
+                    <td class="p-3 text-neutral-400">${escapeHtml(u.email)}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 text-[10px] bg-neutral-900 border border-neutral-800 text-brand-orange font-mono">
+                            ${escapeHtml(u.role || 'Personal')}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right">
+                        ${u.email !== 'admin@ambarcuisine.com' ? `
+                            <button onclick="deleteUser('${u.id}')" title="Eliminar usuario" class="text-neutral-500 hover:text-rose-500 p-1 transition-colors">
+                                <i class="fa-solid fa-user-minus"></i>
+                            </button>
+                        ` : '<span class="text-[10px] text-neutral-600 italic">Principal</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleAdminCreateUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-add-name').value.trim();
+            const email = document.getElementById('admin-add-email').value.trim();
+            const pass = document.getElementById('admin-add-pass').value;
+            const role = document.getElementById('admin-add-role').value;
+
+            if (registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                showToast('Ese correo ya existe en la lista de personal', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: 'usr_' + Date.now(),
+                name, email, role
+            };
+
+            registeredUsers.push(newUser);
+            localStorage.setItem('ambar_users', JSON.stringify(registeredUsers));
+            renderUsersList();
+
+            e.target.reset();
+            showToast(`Empleado ${name} registrado con éxito.`);
+        }
+
+        function deleteUser(id) {
+            registeredUsers = registeredUsers.filter(u => u.id !== id);
+            localStorage.setItem('ambar_users', JSON.stringify(registeredUsers));
+            renderUsersList();
+            showToast('Usuario revocado del sistema', 'info');
+        }
+
+        async function handleUpdateMasterCode(e) {
+            e.preventDefault();
+            const newCode = document.getElementById('new-master-code-input').value.trim();
+            if (!newCode) return;
+
+            masterCodeHash = await hashText(newCode);
+            localStorage.setItem('ambar_master_hash', masterCodeHash);
+
+            document.getElementById('new-master-code-input').value = '';
+            showToast('Clave Secreta Maestra actualizada con cifrado SHA-256');
+        }
+
+        function togglePublicRegistration() {
+            allowPublicRegistration = !allowPublicRegistration;
+            localStorage.setItem('ambar_allow_reg', allowPublicRegistration);
+            updateMasterCodeUI();
+            showToast(`Registro exterior ${allowPublicRegistration ? 'habilitado' : 'deshabilitado'}`, 'info');
+        }
+
+        function updateMasterCodeUI() {
+            const btn = document.getElementById('toggle-registration-btn');
+            if (allowPublicRegistration) {
+                btn.className = "px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold border transition-all bg-emerald-950 text-emerald-400 border-emerald-800";
+                btn.textContent = "Habilitado";
+            } else {
+                btn.className = "px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold border transition-all bg-rose-950 text-rose-400 border-rose-800";
+                btn.textContent = "Deshabilitado";
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
 </body>
 </html>
