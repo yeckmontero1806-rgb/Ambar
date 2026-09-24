@@ -602,6 +602,46 @@
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+        // --- CONEXIÓN Y LÓGICA DE RESERVAS SUPABASE ---
+    const SUPABASE_URL = 'https://imibozoirpsnpllylmjh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltaWJvem9pcnBzbnBsbHlsbWpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NTU2NjYsImV4cCI6MjEwMjMzMTY2Nn0.RHekt23ywPqdmTzyx895Lbq3utGRxlQQ71UVBshk2Wg';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const reservationForm = document.getElementById('reservation-form');
+    const alertBox = document.getElementById('reservation-alert');
+
+    if (reservationForm) {
+      reservationForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Mostrar mensaje de carga
+        alertBox.className = 'mb-6 p-4 text-xs font-light tracking-wide border border-brand-orange text-brand-orange block';
+        alertBox.innerText = 'Procesando reserva...';
+
+        const datosReserva = {
+          nombre: document.getElementById('res-nombre').value,
+          email: document.getElementById('res-email').value,
+          personas: document.getElementById('res-personas').value,
+          fecha: document.getElementById('res-fecha').value,
+          hora: document.getElementById('res-hora').value,
+          mensaje: document.getElementById('res-mensaje').value
+        };
+
+        // Enviar a la tabla 'reservas'
+        const { data, error } = await supabaseClient
+          .from('reservas')
+          .insert([datosReserva]);
+
+        if (error) {
+          alertBox.className = 'mb-6 p-4 text-xs font-light tracking-wide border border-red-500 text-red-400 block';
+          alertBox.innerText = 'Error al realizar la reserva: ' + error.message;
+        } else {
+          alertBox.className = 'mb-6 p-4 text-xs font-light tracking-wide border border-green-500 text-green-400 block';
+          alertBox.innerText = '¡Reserva realizada con éxito! Nos pondremos en contacto pronto.';
+          reservationForm.reset();
+        }
+      });
+    }
     </script>
 </body>
 </html>
